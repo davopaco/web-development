@@ -1,0 +1,24 @@
+.principal-table {
+  font-size: 20px;
+}
+
+.principal-table table {
+  border: solid black 2px;
+  border-collapse: collapse;
+}
+
+.principal-table td {
+  padding: 5px;
+  border: solid black 1px;
+  text-align: center;
+}
+
+.principal-table th {
+  padding: 20px;
+  border: solid black 1px;
+}
+
+.principal-table input {
+  padding: 10px;
+  margin: 0;
+}

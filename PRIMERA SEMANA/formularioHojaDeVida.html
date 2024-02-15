@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creación Hoja de Vida</title>
+</head>
+
+<body>
+  <header>
+    <center>
+      <h1>DISEÑA TU HOJA DE VIDA</h1>
+    </center>
+    <br>
+  </header>
+  <main>
+    <form action="localhost" method="post">
+      <section>
+        <center>
+          <article>
+            <label for="Nombres">Nombre:</label>
+            <input type="text" name="nombre" id="nombre" required>
+            <br> <br>
+            <label for="Apellidos">Apellido:</label>
+            <input type="text" name="apellido" id="apellido" required>
+            <br><br>
+            <label for="Foto">Imagen de Perfil</label>
+            <br> <br>
+            <input type="file" name="photo" id="photo" accept=".jpg, .jpeg, .png" required>
+            <br><br>
+          </article>
+        </center>
+      </section>
+      <center>
+        <table>
+          <tr>
+            <td>
+              <section>
+                <article>
+                  <fieldset>
+                    <h2>INFORMACIÓN PERSONAL</h2>
+                    <label for="Fecha de Nacimiento">Fecha de Nacimiento:</label>
+                    <input type="date" name="fecha_nac" id="fecha_nac" required>
+                    <br><br>
+                    <label for="Lugar de Nacimiento">Lugar de Nacimiento:</label>
+                    <input type="text" name="apellido" id="apellido" required>
+                    <br><br>
+                    <label for="Estado Civil">Estado Civil:</label>
+                    <select name="est_civil" id="est_civil" required>
+                      <option value="0">Seleccionar</option>
+                      <option value="soltero">Soltero/a</option>
+                      <option value="casado">Casado/a</option>
+                      <option value="viudo">Viudo/a</option>
+                      <option value="union">Unión Libre</option>
+                    </select>
+                    <br><br>
+                    <label for="Correo">Correo:</label>
+                    <input type="email" name="correo" id="correo" required>
+                    <br><br>
+                    <label for="Telefono">Telefono:</label>
+                    <input type="tel" name="telefono" id="telefono" required>
+                    <br><br>
+                    <label for="Genero">Género: </label>
+                    <input type="radio" name="genero" id="genero" value="masculino" required> Masculino
+                    <input type="radio" name="genero" id="genero" value="femenino" required> Femenino
+                    <input type="radio" name="genero" id="genero" value="otro" required> Otro
+
+                  </fieldset>
+                  <br>
+                </article>
+              </section>
+              <section>
+                <article>
+                  <fieldset>
+                    <h2>FORMACIÓN ACADÉMICA</h2>
+                    <h3>Primera Referencia</h3>
+                    <label for="Educación">Educación:</label>
+                    <input type="text" name="educacion1" id="educacion1" required>
+                    <br><br>
+                    <label for="Lugar">Lugar:</label>
+                    <input type="text" name="lugar1" id="lugar1" required>
+                    <br><br>
+                    <label for="Fecha de Graduación">Fecha de Graduación:</label>
+                    <input type="date" name="fecha_grad1" id="fecha_grad1" required>
+                    <br><br><br>
+
+                    <h3>Segunda Referencia</h3>
+                    <label for="Educación">Educación:</label>
+                    <input type="text" name="educacion2" id="educacion2" required>
+                    <br><br>
+                    <label for="Lugar">Lugar:</label>
+                    <input type="text" name="lugar2" id="lugar2" required>
+                    <br><br>
+                    <label for="Fecha de Graduación">Fecha de Graduación:</label>
+                    <input type="date" name="fecha_grad2" id="fecha_grad2" required>
+                    <br><br><br>
+
+                    <h3>Tercera Referencia</h3>
+                    <label for="Educación">Educación:</label>
+                    <input type="text" name="educacion3" id="educacion3" required>
+                    <br><br>
+                    <label for="Lugar">Lugar:</label>
+                    <input type="text" name="lugar3" id="lugar3" required>
+                    <br><br>
+                    <label for="Fecha de Graduación">Fecha de Graduación:</label>
+                    <input type="date" name="fecha_grad3" id="fecha_grad3" required>
+                    <br><br>
+                  </fieldset>
+                  <br>
+                </article>
+              </section>
+              <section>
+                <article>
+                  <fieldset>
+                    <h2>EXPERIENCIA LABORAL</h2>
+                    <h3>Primera Referencia</h3>
+                    <label for="Profesión">Profesión:</label>
+                    <input type="text" name="profesion1" id="profesion1" required>
+                    <br><br>
+                    <label for="Fecha Inicial">Fecha Inicial:</label>
+                    <input type="date" name="fec_inic1" id="fec_inic1" required>
+                    <label for="Fecha Final">Fecha Final:</label>
+                    <input type="date" name="fec_fin1" id="fec_fin1" required>
+                    <br><br>
+                    <label for="Actualidad">¿Trabaja en la actualidad?</label>
+                    <input type="checkbox" id="actualidad1" name="actualidad1" value="1" required>
+                    <br><br><br>
+
+                    <h3>Segunda Referencia</h3>
+                    <label for="Profesión">Profesión:</label>
+                    <input type="text" name="profesion2" id="profesion2" required>
+                    <br><br>
+                    <label for="Fecha Inicial">Fecha Inicial:</label>
+                    <input type="date" name="fec_inic2" id="fec_inic2" required>
+                    <label for="Fecha Final">Fecha Final:</label>
+                    <input type="date" name="fec_fin2" id="fec_fin2" required>
+                    <br><br>
+                    <label for="Actualidad">¿Trabaja en la actualidad?</label>
+                    <input type="checkbox" id="actualidad2" name="actualidad2" value="1" required>
+                    <br><br><br>
+
+                    <h3>Tercera Referencia</h3>
+                    <label for="Profesión">Profesión:</label>
+                    <input type="text" name="profesion3" id="profesion3" required>
+                    <br><br>
+                    <label for="Fecha Inicial">Fecha Inicial:</label>
+                    <input type="date" name="fec_inic3" id="fec_inic3" required>
+                    <label for="Fecha Final">Fecha Final:</label>
+                    <input type="date" name="fec_fin3" id="fec_fin3" required>
+                    <br><br>
+                    <label for="Actualidad">¿Trabaja en la actualidad?</label>
+                    <input type="checkbox" id="actualidad3" name="actualidad3" value="1" required>
+                    <br><br><br>
+                  </fieldset>
+                  <br>
+                </article>
+              </section>
+              <section>
+                <article>
+                  <fieldset>
+                    <h2>Referencias Audiovisuales</h2>
+                    <label for="Referencias">Seleccionar video (.mp4, .mov .avi)</label>
+                    <br> <br>
+                    <input type="file" accept=".mp4 .mov">
+                  </fieldset>
+                </article>
+              </section>
+            </td>
+            <td>
+              <section>
+                <article>
+                  <fieldset>
+                    <h2>REFERENCIAS</h2>
+                    <h3>Primera Referencia</h3>
+                    <label for="Nombre">Nombre:</label>
+                    <input type="text" name="nombre1" id="nombre1" required>
+                    <br><br>
+                    <label for="Ocupación">Ocupación:</label>
+                    <input type="text" name="ocupacion1" id="ocupacion1" required>
+                    <br><br>
+                    <label for="Teléfono">Teléfono:</label>
+                    <input type="tel" name="telefono1" id="telefono1" required>
+                    <br><br>
+                    <label for="Correo">Correo Electrónico:</label>
+                    <input type="email" name="correo1" id="correo1" required>
+                    <br><br><br>
+
+                    <h3>Segunda Referencia</h3>
+                    <label for="Nombre">Nombre:</label>
+                    <input type="text" name="nombre2" id="nombre2" required>
+                    <br><br>
+                    <label for="Ocupación">Ocupación:</label>
+                    <input type="text" name="ocupacion2" id="ocupacion2" required>
+                    <br><br>
+                    <label for="Teléfono">Teléfono:</label>
+                    <input type="tel" name="telefono2" id="telefono2" required>
+                    <br><br>
+                    <label for="Correo">Correo Electrónico:</label>
+                    <input type="email" name="correo2" id="correo2" required>
+                    <br><br><br>
+
+                    <h3>Tercera Referencia</h3>
+                    <label for="Nombre">Nombre:</label>
+                    <input type="text" name="nombre3" id="nombre" required>
+                    <br><br>
+                    <label for="Ocupación">Ocupación:</label>
+                    <input type="text" name="ocupacion3" id="ocupacion3" required>
+                    <br><br>
+                    <label for="Teléfono">Teléfono:</label>
+                    <input type="tel" name="telefono3" id="telefono3" required>
+                    <br><br>
+                    <label for="Correo">Correo Electrónico:</label>
+                    <input type="email" name="correo3" id="correo3" required>
+                    <br><br><br>
+                  </fieldset>
+                  <br>
+                </article>
+              </section>
+              <section>
+                <article>
+                  <fieldset>
+                    <h2>IDIOMAS</h2>
+                    <label for="Idioma1">Primer Idioma:</label>
+                    <br>
+                    <input type="text" name="idioma1" id="idioma1" required>
+                    <br>
+                    <input type="range" name="idioma1r" id="idioma1r" required>
+                    <br>
+                    <label for="Idioma2">Segundo Idioma:</label>
+                    <br>
+                    <input type="text" name="idioma2" id="idioma2" required>
+                    <br>
+                    <input type="range" name="idioma2r" id="idioma2r" required>
+                    <br>
+                    <label for="Idioma3">Tercer Idioma:</label>
+                    <br>
+                    <input type="text" name="idioma3" id="idioma3" required>
+                    <br>
+                    <input type="range" name="idioma3r" id="idioma3r" required>
+                    <br>
+                  </fieldset>
+                  <br>
+                </article>
+              </section>
+              <section>
+                <article>
+                  <fieldset>
+                    <h2>CAPACIDADES PROFESIONALES</h2>
+                    <h3>Capacidad de Primera Referencia</h3>
+                    <textarea name="cap1" id="cap1" cols="40" rows="10" required></textarea>
+                    <h3>Capacidad de Segunda Referencia</h3>
+                    <textarea name="cap2" id="cap2" cols="40" rows="10" required></textarea>
+                    <h3>Capacidad de Tercera Referencia</h3>
+                    <textarea name="cap3" id="cap3" cols="40" rows="10" required></textarea>
+                  </fieldset>
+                </article>
+              </section>
+            </td>
+          </tr>
+        </table>
+      </center>
+      <input type="submit" value="Enviar">
+    </form>
+  </main>
+  <footer>
+    <p>Contacto</p>
+    <a href="www.linkedin.com">LinkedIn</a>
+    <a href="www.instagram.com">Instagram</a>
+    <a href="www.facebook.com">Facebook</a>
+  </footer>
+
+</html>

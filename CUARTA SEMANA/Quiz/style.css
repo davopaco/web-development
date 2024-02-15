@@ -1,0 +1,56 @@
+body {
+  background-color: black;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  border-collapse: separate;
+  width: 100%;
+  height: 100%;
+  border-spacing: 6px;
+}
+
+.input-number {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 100px;
+  text-align: right;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: black;
+  color: white;
+  border: 0px;
+}
+
+.grid-buttons {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.functions,
+.numbers {
+  font-size: 25px;
+  color: white;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.functions {
+  background-color: rgb(56, 56, 61);
+}
+
+.numbers {
+  background-color: rgb(112, 112, 112);
+}
+
+.functions:hover {
+  background-color: rgb(112, 112, 112);
+}
+
+.numbers:hover {
+  background-color: rgb(56, 56, 61);
+}
