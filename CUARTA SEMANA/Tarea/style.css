@@ -67,12 +67,11 @@ header nav {
 .movie-content {
   background-color: white;
   padding: 20px;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .movie-content h1 {
-  border-left: 6px solid rgb(225, 199, 52);
-  border-radius: 2px;
+  border-left: 6px solid rgb(254, 225, 58);
   padding-left: 8px;
   margin-bottom: 10px;
 }
@@ -89,6 +88,7 @@ header nav {
   border-radius: 5px;
   padding-left: 15px;
   padding-right: 15px;
+  font-size: 1em;
 }
 
 .movie-table p {
@@ -97,14 +97,15 @@ header nav {
 
 .movie-cell {
   display: grid;
-  grid-template-columns: 1fr 7fr;
+  grid-template-columns: auto 7fr;
   column-gap: 0px;
   padding: 10px 10px 15px 10px;
   border-bottom: solid 1px rgb(125, 125, 125);
 }
 
 .movie-cell img {
-  width: 100%;
+  width: 97px;
+  object-fit: cover;
   grid-column: 1;
 }
 
@@ -118,7 +119,6 @@ header nav {
 .text h3 {
   margin: 0;
   padding-bottom: 4px;
-  font-size: 0.9em;
 }
 
 .description {
