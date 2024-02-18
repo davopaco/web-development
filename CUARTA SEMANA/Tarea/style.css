@@ -2,12 +2,18 @@ body {
   background-color: black;
   margin: 6px 11px;
   font-family: "Roboto", sans-serif;
+  display: grid;
+  grid-template-rows: 1fr auto;
 }
 
 header nav {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 10px;
+}
+
+.grid-cont1 {
+  grid-row: 1;
 }
 
 .grid-cont1 svg {
@@ -42,6 +48,7 @@ header nav {
   color: rgb(225, 199, 52);
   font-size: 1.5em;
   margin: 0 10px;
+  width: auto;
 }
 
 .login {
@@ -52,6 +59,7 @@ header nav {
   width: 80px;
   height: 100%;
   justify-self: right;
+  padding: 0px 10px 0px 10px;
 }
 
 .login svg {
@@ -62,12 +70,14 @@ header nav {
   font-size: 0.9em;
   padding: 12px 10px 10px 0px;
   margin: 0;
+  font-weight: bold;
 }
 
 .movie-content {
   background-color: white;
   padding: 20px;
   margin-top: 15px;
+  grid-row: 2;
 }
 
 .movie-content h1 {
@@ -113,7 +123,7 @@ header nav {
   grid-column: 2;
   padding: 10px;
   justify-content: left;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .text h3 {
@@ -125,4 +135,46 @@ header nav {
   grid-row: 2;
   grid-column: 1 / span 2;
   margin-top: 12px;
+}
+
+@media (max-width: 800px) {
+  body {
+    margin: 10px 25px 25px 25px;
+  }
+  header nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 6px;
+  }
+  .grid-cont1 svg {
+    grid-column: 1;
+    grid-row: 1;
+    transform: scale(1.2);
+    justify-self: center;
+  }
+
+  .grid-cont1 table {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .search-bar input {
+    width: 100%;
+  }
+
+  .login {
+    grid-row: 3;
+    width: 96%;
+    justify-self: center;
+  }
+
+  .description {
+    margin-top: 10px;
+  }
+
+  .login svg {
+    grid-column: 1;
+    column-gap: 0px;
+    justify-self: right;
+  }
 }
