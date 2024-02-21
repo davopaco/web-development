@@ -164,11 +164,12 @@ function operationValueDisplay(value, equals = false) {
         if (typeof value === "string") {
           operationValueDisplay(calculator.memory.peek(), true);
         }
-        break;
+        calculator.memory.clear();
+        console.log(calculator.memory.array);
+        return;
     }
     if (value !== "equals") {
       display.content.value = result;
-      console.log(calculator.memory.array);
     }
   }
   calculator.memory.push(eval(display.content.value));
