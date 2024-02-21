@@ -16,6 +16,10 @@ const calculator = {
     peek: function () {
       return this.array[this.array.length - 1];
     },
+    peekBefore: function () {
+      return this.array[this.array.length - 2];
+    },
+    newNumber: false,
   },
   add: function (a, b) {
     return a + b;
@@ -50,6 +54,10 @@ const display = {
   go: function () {
     return this.nchars < this.limit;
   },
+  clear: function () {
+    this.content.value = "";
+    this.nchars = 0;
+  },
   add: function (value) {
     if (this.go()) {
       if (this.content.value === "0" && value !== ".") {
@@ -66,6 +74,10 @@ const display = {
       if (this.content.value === ".") {
         this.content.value = "0.";
         this.nchars = 0;
+      }
+      if (calculator.memory.newNumber === true) {
+        this.clear();
+        calculator.memory.newNumber = false;
       }
       this.content.value += value;
       this.nchars++;
@@ -87,34 +99,7 @@ function backValueDisplay() {
   display.back();
 }
 
-function clearValueDisplay() {
-  display.content.value = "";
-  display.nchars = 0;
-}
-
-function clearDisplay() {
-  calculator.memory.clear();
-  display.content.value = "";
-  display.nchars = 0;
-}
-
 function pushMemory() {
-  calculator.memory.push(eval(display.content.value));
-  clearValueDisplay();
-  console.log(calculator.memory.peek());
-}
-
-function add() {
-  display.content.value = calculator.memory.peek();
-}
-
-function subtract() {
-  if (!calculator.memory.isEmpty()) {
-    calculator.memory.push(
-      calculator.subtract(calculator.memory.peek(), display.content.value)
-    );
-    display.content.value = calculator.memory.peek();
-  }
   calculator.memory.push(eval(display.content.value));
   clearValueDisplay();
   console.log(calculator.memory.peek());
@@ -124,44 +109,22 @@ function equals(value) {
   var result = 0;
   const a = calculator.memory.peek();
   const b = eval(display.content.value);
-  if (calculator.memory.array.length === 2) {
-    switch (value) {
-      case "plus":
-        result = calculator.add(a, b);
-        break;
-      case "minus":
-        result = calculator.subtract(a, b);
-        break;
-      case "multiply":
-        result = calculator.multiply(a, b);
-        break;
-      case "divide":
-        result = calculator.divide(a, b);
-        break;
-      case "sqrt":
-        result = calculator.sqrt(a);
-        break;
-      case "square":
-        result = calculator.square(a);
-        break;
-      case "percentage":
-        result = calculator.percentage(a, b);
-        break;
-      case "inverse":
-        result = calculator.inverse(a);
-        break;
-    }
-  }
   display.content.value = result;
+}
+
+function clearDisplay() {
   calculator.memory.clear();
+  display.clear();
 }
 
 function operationValueDisplay(value) {
   if (!calculator.memory.isEmpty()) {
-    const a = calculator.memory.peek();
+    console.log("gets in!");
+    const a = calculator.memory.peekBefore();
+    console.log(a);
     const b = eval(display.content.value);
-    var result = 0;
-    calculator.memory.push(calculator.add(a, b));
+    console.log(b);
+    let result = 0;
     switch (value) {
       case "plus":
         result = calculator.add(a, b);
@@ -187,11 +150,20 @@ function operationValueDisplay(value) {
       case "inverse":
         result = calculator.inverse(a);
         break;
+      case "equals":
+        const value = calculator.memory.peek();
+        if (typeof value === "string") {
+          operationValueDisplay(value);
+        }
+        break;
     }
-    calculator.memory.push(result);
-    display.content.value = result;
-    return;
+    if (value !== "equals") {
+      calculator.memory.push(result);
+      display.content.value = result;
+      console.log(calculator.memory.array);
+    }
   }
   calculator.memory.push(eval(display.content.value));
-  clearValueDisplay();
+  calculator.memory.push(value);
+  calculator.memory.newNumber = true;
 }
