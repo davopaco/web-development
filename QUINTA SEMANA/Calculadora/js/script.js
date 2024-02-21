@@ -118,14 +118,20 @@ function clearDisplay() {
 }
 
 function operationValueDisplay(value) {
-  if (!calculator.memory.isEmpty()) {
+  if (
+    !calculator.memory.isEmpty() ||
+    typeof calculator.memory.peek() === "number"
+  ) {
     console.log("gets in!");
     const a = calculator.memory.peekBefore();
-    console.log(a);
     const b = eval(display.content.value);
-    console.log(b);
+    let actualValue = calculator.memory.pop();
     let result = 0;
-    switch (value) {
+    if (value === "equals") {
+      actualValue = "equals";
+    }
+    console.log(actualValue);
+    switch (actualValue) {
       case "plus":
         result = calculator.add(a, b);
         break;
@@ -158,7 +164,6 @@ function operationValueDisplay(value) {
         break;
     }
     if (value !== "equals") {
-      calculator.memory.push(result);
       display.content.value = result;
       console.log(calculator.memory.array);
     }
