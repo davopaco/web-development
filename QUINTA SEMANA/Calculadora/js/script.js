@@ -99,19 +99,6 @@ function backValueDisplay() {
   display.back();
 }
 
-function pushMemory() {
-  calculator.memory.push(eval(display.content.value));
-  clearValueDisplay();
-  console.log(calculator.memory.peek());
-}
-
-function equals(value) {
-  var result = 0;
-  const a = calculator.memory.peek();
-  const b = eval(display.content.value);
-  display.content.value = result;
-}
-
 function clearDisplay() {
   calculator.memory.clear();
   display.clear();
