@@ -99,6 +99,10 @@ function backValueDisplay() {
   display.back();
 }
 
+function clearValueDisplay() {
+  display.clear();
+}
+
 function clearDisplay() {
   calculator.memory.clear();
   display.clear();
@@ -152,7 +156,6 @@ function operationValueDisplay(value, equals = false) {
           operationValueDisplay(calculator.memory.peek(), true);
         }
         calculator.memory.clear();
-        console.log(calculator.memory.array);
         return;
     }
     if (value !== "equals") {
