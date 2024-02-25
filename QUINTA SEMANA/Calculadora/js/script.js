@@ -59,6 +59,10 @@ const display = {
     this.nchars = 0;
   },
   add: function (value) {
+    if (calculator.memory.newNumber === true) {
+      this.clear();
+      calculator.memory.newNumber = false;
+    }
     if (this.go()) {
       if (this.content.value === "0" && value !== ".") {
         this.content.value = "";
@@ -74,10 +78,6 @@ const display = {
       if (this.content.value === ".") {
         this.content.value = "0.";
         this.nchars = 0;
-      }
-      if (calculator.memory.newNumber === true) {
-        this.clear();
-        calculator.memory.newNumber = false;
       }
       this.content.value += value;
       this.nchars++;
@@ -150,6 +150,10 @@ function operationValueDisplay(value, equals = false) {
         return;
     }
     if (value !== "equals") {
+      if (String(result).length > 10) {
+        display.content.value = String(result.toExponential(3));
+        return;
+      }
       display.content.value = result;
     }
   }
@@ -168,6 +172,10 @@ function operationValueDisplay(value, equals = false) {
         break;
     }
     if (value !== "equals") {
+      if (String(result).length > 10) {
+        display.content.value = String(result.toExponential(3));
+        return;
+      }
       display.content.value = result;
     }
   }
