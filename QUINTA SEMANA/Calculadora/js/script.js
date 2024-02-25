@@ -109,15 +109,15 @@ function clearDisplay() {
 }
 
 function operationValueDisplay(value, equals = false) {
+  if (display.content.value === "") return;
+  const functions = ["sqrt", "square", "inverse"];
   if (
     !calculator.memory.isEmpty() ||
     typeof calculator.memory.peek() === "number"
   ) {
-    console.log("gets in!");
     const a = calculator.memory.peekBefore();
     const b = eval(display.content.value);
     let actualValue = "";
-    let result = 0;
     if (value === "equals") {
       actualValue = "equals";
     } else if (equals) {
@@ -135,20 +135,11 @@ function operationValueDisplay(value, equals = false) {
       case "multiply":
         result = calculator.multiply(a, b);
         break;
-      case "divide":
+      case "division":
         result = calculator.divide(a, b);
-        break;
-      case "sqrt":
-        result = calculator.sqrt(a);
-        break;
-      case "square":
-        result = calculator.square(a);
         break;
       case "percentage":
         result = calculator.percentage(a, b);
-        break;
-      case "inverse":
-        result = calculator.inverse(a);
         break;
       case "equals":
         const value = calculator.memory.peek();
@@ -157,6 +148,24 @@ function operationValueDisplay(value, equals = false) {
         }
         calculator.memory.clear();
         return;
+    }
+    if (value !== "equals") {
+      display.content.value = result;
+    }
+  }
+  if (functions.includes(value)) {
+    const a = eval(display.content.value);
+    let result = 0;
+    switch (value) {
+      case "inverse":
+        result = calculator.inverse(a);
+        break;
+      case "sqrt":
+        result = calculator.sqrt(a);
+        break;
+      case "square":
+        result = calculator.square(a);
+        break;
     }
     if (value !== "equals") {
       display.content.value = result;
