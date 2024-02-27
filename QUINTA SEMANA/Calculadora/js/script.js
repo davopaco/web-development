@@ -110,6 +110,7 @@ function clearDisplay() {
 
 function operationValueDisplay(value, equals = false) {
   if (display.content.value === "") return;
+  let result = eval(display.content.value);
   const functions = ["sqrt", "square", "inverse"];
   if (
     !calculator.memory.isEmpty() ||
@@ -149,17 +150,9 @@ function operationValueDisplay(value, equals = false) {
         calculator.memory.clear();
         return;
     }
-    if (value !== "equals") {
-      if (String(result).length > 10) {
-        display.content.value = String(result.toExponential(3));
-        return;
-      }
-      display.content.value = result;
-    }
   }
   if (functions.includes(value)) {
     const a = eval(display.content.value);
-    let result = 0;
     switch (value) {
       case "inverse":
         result = calculator.inverse(a);
@@ -171,13 +164,13 @@ function operationValueDisplay(value, equals = false) {
         result = calculator.square(a);
         break;
     }
-    if (value !== "equals") {
-      if (String(result).length > 10) {
-        display.content.value = String(result.toExponential(3));
-        return;
-      }
-      display.content.value = result;
+  }
+  if (value !== "equals") {
+    if (String(result).length > 10) {
+      display.content.value = String(result.toExponential(3));
+      return;
     }
+    display.content.value = result;
   }
   calculator.memory.push(eval(display.content.value));
   calculator.memory.push(value);
