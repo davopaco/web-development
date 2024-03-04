@@ -1,17 +1,16 @@
-import IndexModel from '../model/IndexModel.js'
-import IndexView from '../view/IndexView.js'
+import IndexModel from "../model/IndexModel.js";
+import IndexView from "../view/IndexView.js";
 
 export default class IndexController {
-  constructor (
+  constructor(
     private readonly view: IndexView,
     private readonly model: IndexModel
   ) {
-    console.log('IndexController')
+    console.log("IndexController");
   }
 
-  public start (): void {
-    console.log('IndexController.start')
-    this.view.deploy()
-    this.model.getData()
+  public start(): void {
+    console.log("IndexController.start");
+    this.view.deploy(this.model.getMovies());
   }
 }
