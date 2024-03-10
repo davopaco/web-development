@@ -4,15 +4,10 @@ export interface MovieStarwars {
 
 export interface RImageModel {
   url: string;
-  maxHeight: number;
-  maxWidth: number;
-  caption: string;
 }
 
 export interface TitleResults {
   results: TitleResultsResult[];
-  nextCursor: string;
-  hasExactMatches: boolean;
 }
 
 export interface TitleResultsResult {

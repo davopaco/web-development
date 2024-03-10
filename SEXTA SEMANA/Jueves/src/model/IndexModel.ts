@@ -1,4 +1,5 @@
 import MovieInterface from "./types/MovieInterface";
+import { MovieInterfaceID } from "./types/MovieByIDInterface";
 
 export default class IndexModel {
   constructor() {
@@ -11,10 +12,33 @@ export default class IndexModel {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
-            "b788cc0a90mshb82dc764acf1b06p12481djsn2e181b7b63f2",
+            "254c36ce51mshdf25c95ac4c24abp1a78cfjsn10e84fd5b687", //add a 7
           "X-RapidAPI-Host": "imdb-top-100-movies.p.rapidapi.com",
         },
       });
+      response
+        .then((data) => {
+          resolve(data.json());
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  public async getTrailer(id: number): Promise<MovieInterfaceID> {
+    return await new Promise((resolve, reject) => {
+      const response = fetch(
+        `https://imdb-top-100-movies.p.rapidapi.com/top${id}`,
+        {
+          method: "GET",
+          headers: {
+            "X-RapidAPI-Key":
+              "254c36ce51mshdf25c95ac4c24abp1a78cfjsn10e84fd5b687", //add 7
+            "X-RapidAPI-Host": "imdb-top-100-movies.p.rapidapi.com",
+          },
+        }
+      );
       response
         .then((data) => {
           resolve(data.json());
