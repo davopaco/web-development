@@ -69,7 +69,7 @@ export default class IndexView {
     <div class="movie-trailer" id="movie-trailer">
       <div class="video">
       <a>X&nbsp;Close</a>
-        <iframe src="${movieByID.trailer_embed_link}">
+        <iframe src="${movieByID.trailer_embed_link}?autoplay=1">
         </iframe>
       </div>
       <div class="movie-info">

@@ -30,7 +30,7 @@ export default class IndexController {
                         .then(() => {
                         this.removeTrailer();
                     });
-                });
+                }, { passive: true });
             });
         });
     }
@@ -41,7 +41,8 @@ export default class IndexController {
                 console.log("removeTrailer");
                 btn.addEventListener("click", () => {
                     this.view.removeTrailer();
-                });
+                    this.showTrailer();
+                }, { passive: true });
             });
         });
     }

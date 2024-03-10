@@ -18,15 +18,19 @@ export default class IndexController {
   async showTrailer(): Promise<void> {
     const trailers = document.querySelectorAll(".movie-cell a");
     trailers.forEach((trailer) => {
-      trailer.addEventListener("click", (e) => {
-        e.preventDefault();
-        console.log(trailer.id);
-        this.view
-          .deployTrailer(this.model.getTrailer(parseInt(trailer.id)))
-          .then(() => {
-            this.removeTrailer();
-          });
-      });
+      trailer.addEventListener(
+        "click",
+        (e) => {
+          e.preventDefault();
+          console.log(trailer.id);
+          this.view
+            .deployTrailer(this.model.getTrailer(parseInt(trailer.id)))
+            .then(() => {
+              this.removeTrailer();
+            });
+        },
+        { passive: true }
+      );
     });
   }
 
@@ -34,9 +38,14 @@ export default class IndexController {
     const button = document.querySelectorAll(".movie-trailer .video a");
     button.forEach((btn) => {
       console.log("removeTrailer");
-      btn.addEventListener("click", () => {
-        this.view.removeTrailer();
-      });
+      btn.addEventListener(
+        "click",
+        () => {
+          this.view.removeTrailer();
+          this.showTrailer();
+        },
+        { passive: true }
+      );
     });
   }
 }
