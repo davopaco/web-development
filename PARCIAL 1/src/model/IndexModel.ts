@@ -2,8 +2,11 @@ import { Articles, Papers } from "./types/ArticleInterface.js";
 
 // Define la clase del modelo.
 export default class IndexModel {
+  private readonly input: HTMLInputElement;
+  private readonly btn: HTMLInputElement;
   constructor() {
-    console.log("IndexModel");
+    this.input = document.querySelector("#search-bar") as HTMLInputElement;
+    this.btn = document.querySelector("#search-btn") as HTMLInputElement;
   }
   //Función para obtener las películas.
   public async getPapers(): Promise<Papers[]> {
@@ -23,5 +26,13 @@ export default class IndexModel {
           reject(err);
         });
     });
+  }
+
+  public getInput() {
+    return this.input;
+  }
+
+  public getBtn() {
+    return this.btn;
   }
 }

@@ -60,8 +60,6 @@ export default class IndexView {
         };
         //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
-        this.input = document.querySelector("#search-bar");
-        this.btn = document.querySelector("#search-btn");
     }
     //Función para desplegar las películas en el index.
     deploy(papers) {
@@ -80,7 +78,7 @@ export default class IndexView {
             });
         });
     }
-    searchBar(parameter) {
+    searchBar(parameter, input) {
         const cards = document.querySelectorAll(".card");
         cards.forEach((card) => {
             var _a;
@@ -88,7 +86,7 @@ export default class IndexView {
             let foundMatch = false;
             for (const element of h3) {
                 const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
-                if (txtValue.toUpperCase().indexOf(this.input.value.toUpperCase()) > -1) {
+                if (txtValue.toUpperCase().indexOf(input.value.toUpperCase()) > -1) {
                     foundMatch = true;
                     break;
                 }
@@ -101,10 +99,10 @@ export default class IndexView {
             }
         });
     }
-    buttonClicked() {
-        this.btn.addEventListener("click", (e) => {
+    buttonClicked(btn, input) {
+        btn.addEventListener("click", (e) => {
             e.preventDefault();
-            this.searchBar("searchh");
+            this.searchBar("searchh", input);
         });
     }
 }

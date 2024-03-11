@@ -14,6 +14,6 @@ export default class IndexController {
   public async start(): Promise<void> {
     //Despliega la vista usando el modelo obtenido
     await this.view.deploy(this.model.getPapers());
-    this.view.buttonClicked();
+    this.view.buttonClicked(this.model.getBtn(), this.model.getInput());
   }
 }

@@ -3,14 +3,10 @@ import { Papers } from "../model/types/ArticleInterface.js";
 export default class IndexView {
   //Establece las variables de la clase por Div y Body.
   private readonly sec: HTMLDivElement;
-  private readonly input: HTMLInputElement;
-  private readonly btn: HTMLInputElement;
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
     this.sec = document.querySelector("#sec") as HTMLDivElement;
-    this.input = document.querySelector("#search-bar") as HTMLInputElement;
-    this.btn = document.querySelector("#search-btn") as HTMLInputElement;
   }
   //Función para desplegar las películas en el index.
   public async deploy(papers: Promise<Papers[]>): Promise<void> {
@@ -82,7 +78,7 @@ export default class IndexView {
     return liString;
   };
 
-  public searchBar(parameter: string) {
+  public searchBar(parameter: string, input: HTMLInputElement) {
     const cards = document.querySelectorAll(
       ".card"
     ) as unknown as HTMLDivElement[];
@@ -92,9 +88,7 @@ export default class IndexView {
       for (const element of h3) {
         const txtValue =
           (element as HTMLElement).innerText ?? element.textContent;
-        if (
-          txtValue.toUpperCase().indexOf(this.input.value.toUpperCase()) > -1
-        ) {
+        if (txtValue.toUpperCase().indexOf(input.value.toUpperCase()) > -1) {
           foundMatch = true;
           break;
         }
@@ -107,10 +101,10 @@ export default class IndexView {
     });
   }
 
-  public buttonClicked() {
-    this.btn.addEventListener("click", (e) => {
+  public buttonClicked(btn: HTMLInputElement, input: HTMLInputElement) {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
-      this.searchBar("searchh");
+      this.searchBar("searchh", input);
     });
   }
 }

@@ -19,7 +19,7 @@ export default class IndexController {
         return __awaiter(this, void 0, void 0, function* () {
             //Despliega la vista usando el modelo obtenido
             yield this.view.deploy(this.model.getPapers());
-            this.view.buttonClicked();
+            this.view.buttonClicked(this.model.getBtn(), this.model.getInput());
         });
     }
 }
