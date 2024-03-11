@@ -1,0 +1,23 @@
+// Define la interfaz de la película
+export interface Articles {
+  papers: Papers[];
+}
+
+export interface Papers{
+  _pt: string;
+  _abstract: string;
+  _annote: string;
+  _author: string;
+  _doi: string;
+  _issn: string;
+  _journal: string;
+  _keywords: string;
+  _month: string;
+  _pages: string;
+  _publisher: string;
+  _title: string;
+  _url: string;
+  _volume: string;
+  _year: string;
+  _id: string;
+}
