@@ -1,3 +1,4 @@
+// Define la interfaz de la película
 export default interface MovieInterface {
   rank: number;
   title: string;

@@ -1,13 +1,17 @@
 import MovieInterface from "./types/MovieInterface";
 import { MovieInterfaceID } from "./types/MovieByIDInterface";
 
+// Define la clase del modelo.
 export default class IndexModel {
   constructor() {
     console.log("IndexModel");
   }
 
+  //Función para obtener las películas.
   public async getMovies(): Promise<MovieInterface[]> {
+    //Retorna una promesa que resuelve un fetch a la API de las películas.
     return await new Promise((resolve, reject) => {
+      //Hace un fetch a la API de las películas.
       const response = fetch("https://imdb-top-100-movies.p.rapidapi.com/", {
         method: "GET",
         headers: {
@@ -16,6 +20,7 @@ export default class IndexModel {
           "X-RapidAPI-Host": "imdb-top-100-movies.p.rapidapi.com",
         },
       });
+      //Si la promesa se resuelve, resuelve la promesa de la función que es la interfaz de películas.
       response
         .then((data) => {
           resolve(data.json());
@@ -26,7 +31,9 @@ export default class IndexModel {
     });
   }
 
+  //Función para obtener el trailer de la película.
   public async getTrailer(id: number): Promise<MovieInterfaceID> {
+    //Retorna una promesa que resuelve un fetch a la API del trailer de la película.
     return await new Promise((resolve, reject) => {
       const response = fetch(
         `https://imdb-top-100-movies.p.rapidapi.com/top${id}`,
@@ -39,6 +46,7 @@ export default class IndexModel {
           },
         }
       );
+      //Si la promesa se resuelve, resuelve la promesa de la función que es la interfaz de película por ID.
       response
         .then((data) => {
           resolve(data.json());

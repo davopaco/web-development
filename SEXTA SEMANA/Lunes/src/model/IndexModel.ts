@@ -5,8 +5,10 @@ export default class IndexModel {
     console.log("IndexModel");
   }
 
+  // Método que retorna una promesa con un array de objetos de tipo TitleResultsResult
   public async getMovies(): Promise<TitleResultsResult[]> {
     return await new Promise((resolve, reject) => {
+      // Petición a la API de IMDB
       const response = fetch(
         "https://imdb146.p.rapidapi.com/v1/find/?query=starwars",
         {
@@ -18,10 +20,14 @@ export default class IndexModel {
           },
         }
       );
+      // Resolución de la promesa
       response
-        .then(async (data) => {
-          const movieStarwars: Promise<MovieStarwars> = await data.json();
-          resolve((await movieStarwars).titleResults.results);
+        .then((data) => {
+          // Se crea un objeto de tipo MovieStarwars con la respuesta de la API
+          data.json().then((movieStarwars: MovieStarwars) => {
+            // Se retorna el array de objetos de tipo TitleResultsResult
+            resolve(movieStarwars.titleResults.results);
+          });
         })
         .catch((err) => {
           reject(err);
