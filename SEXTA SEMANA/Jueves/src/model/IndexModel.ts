@@ -1,12 +1,36 @@
-import MovieInterface from "./types/MovieInterface";
+import { MovieInterface } from "./types/MovieInterface";
 import { MovieInterfaceID } from "./types/MovieByIDInterface";
 
 // Define la clase del modelo.
 export default class IndexModel {
+  private readonly movieCell: HTMLDivElement[];
+  private input: HTMLInputElement;
+  private filter: string;
+
   constructor() {
+    this.input = document.querySelector("#input-text") as HTMLInputElement;
+    this.filter = this.input.value.toUpperCase();
+    this.movieCell = document.querySelectorAll(
+      ".movie-cell"
+    ) as unknown as HTMLDivElement[];
     console.log("IndexModel");
   }
 
+  public searchBar() {
+    this.movieCell.forEach((movieCell) => {
+      const h3 = movieCell.getElementsByTagName("h3");
+      for (const element of h3) {
+        const txtValue = element.textContent ?? element.innerText;
+        if (txtValue.toUpperCase().indexOf(this.filter) > -1) {
+          if (element.parentElement) {
+            movieCell.style.display = "";
+          }
+        } else {
+          movieCell.style.display = "none";
+        }
+      }
+    });
+  }
   //Función para obtener las películas.
   public async getMovies(): Promise<MovieInterface[]> {
     //Retorna una promesa que resuelve un fetch a la API de las películas.

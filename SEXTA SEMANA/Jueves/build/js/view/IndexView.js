@@ -7,9 +7,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+/* import { MovieInterfaceID } from "../model/types/MovieByIDInterface"; */
 export default class IndexView {
+    /* private readonly body: HTMLBodyElement;
+    private readonly button: HTMLLinkElement; */
     constructor() {
+        /* public async deployTrailer(
+          movieByIDPromise: Promise<MovieInterfaceID>
+        ): Promise<void> {
+          //Espera a que se resuelva la promesa de la película por ID.
+          return await movieByIDPromise
+            .then((movieByID) => {
+              //Añade al elemento body, el artículo del trailer de la película.
+              this.body.innerHTML += this.getArticleTrailer(movieByID);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      
+        //Función para remover el trailer de la película.
+        public removeTrailer(): void {
+          //Selecciona el overlay y el movie-trailer del HTML.
+          const overlay = document.getElementById("overlay");
+          const movieTrailer = document.getElementById("movie-trailer");
+          //Si existe el overlay, lo remueve.
+          if (overlay) {
+            overlay.remove();
+          }
+          //Si existe el movie-trailer, lo remueve.
+          if (movieTrailer) {
+            movieTrailer.remove();
+          }
+        } */
+        //Función para obtener el pedazo de documento HTML que representa a cada película.
         this.getArticle = (movie) => {
+            //Retorna el pedazo de documento HTML que representa a cada película.
             return `<div class="movie-cell">
         <a id="${movie.rank}")><img src="${movie.image}" alt="${movie.title}"></a>
         <div class="text">
@@ -22,37 +55,23 @@ export default class IndexView {
         </div>
       </div>`;
         };
-        this.getArticleTrailer = (movieByID) => {
-            return `<div class="overlay" id="overlay"></div>
-    <div class="movie-trailer" id="movie-trailer">
-      <div class="video">
-      <a>X&nbsp;Close</a>
-        <iframe src="${movieByID.trailer_embed_link}?autoplay=1">
-        </iframe>
-      </div>
-      <div class="movie-info">
-        <div class="title">
-          <img src="${movieByID.image}" alt="${movieByID.title}">
-          <div class="classification">
-            <h2>Movie Title</h2>
-            <p>${movieByID.rank}&nbsp;|&nbsp;${movieByID.genre != null ? movieByID.genre[0] : " "}</p>
-          </div>
-        </div>
-        <div class="movie-desc">
-          <h1>Official Trailer</h1>
-          <p>${movieByID.description}</p>
-        </div>
-      </div>
-    </div>`;
-        };
+        //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
-        this.body = document.body;
+        /* this.body = document.body as HTMLBodyElement;
+        this.button = document.querySelector("#button-search") as HTMLLinkElement; */
     }
+    /* public getButton(): HTMLLinkElement {
+      return this.button;
+    } */
+    //Función para desplegar las películas en el index.
     deploy(moviesPromise) {
         return __awaiter(this, void 0, void 0, function* () {
+            //Espera a que se resuelva la promesa de las películas.
             return yield moviesPromise
                 .then((movies) => {
+                //Recorre el array de películas y despliega cada una de ellas.
                 movies.forEach((movie) => {
+                    //Añade al elemento sec, el artículo de cada película.
                     this.sec.innerHTML += this.getArticle(movie);
                 });
             })
@@ -60,26 +79,5 @@ export default class IndexView {
                 console.error(err);
             });
         });
-    }
-    deployTrailer(movieByIDPromise) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield movieByIDPromise
-                .then((movieByID) => {
-                this.body.innerHTML += this.getArticleTrailer(movieByID);
-            })
-                .catch((err) => {
-                console.error(err);
-            });
-        });
-    }
-    removeTrailer() {
-        const overlay = document.getElementById("overlay");
-        const movieTrailer = document.getElementById("movie-trailer");
-        if (overlay) {
-            overlay.remove();
-        }
-        if (movieTrailer) {
-            movieTrailer.remove();
-        }
     }
 }

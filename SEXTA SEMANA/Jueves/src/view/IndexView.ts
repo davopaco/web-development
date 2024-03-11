@@ -1,17 +1,22 @@
-import MovieInterface from "../model/types/MovieInterface";
-import { MovieInterfaceID } from "../model/types/MovieByIDInterface";
+import { MovieInterface } from "../model/types/MovieInterface";
+/* import { MovieInterfaceID } from "../model/types/MovieByIDInterface"; */
 
 export default class IndexView {
   //Establece las variables de la clase por Div y Body.
   private readonly sec: HTMLDivElement;
-  private readonly body: HTMLBodyElement;
+  /* private readonly body: HTMLBodyElement;
+  private readonly button: HTMLLinkElement; */
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
     this.sec = document.querySelector("#sec") as HTMLDivElement;
-    this.body = document.body as HTMLBodyElement;
+    /* this.body = document.body as HTMLBodyElement;
+    this.button = document.querySelector("#button-search") as HTMLLinkElement; */
   }
 
+  /* public getButton(): HTMLLinkElement {
+    return this.button;
+  } */
   //Función para desplegar las películas en el index.
   public async deploy(moviesPromise: Promise<MovieInterface[]>): Promise<void> {
     //Espera a que se resuelva la promesa de las películas.
@@ -28,7 +33,7 @@ export default class IndexView {
       });
   }
 
-  public async deployTrailer(
+  /* public async deployTrailer(
     movieByIDPromise: Promise<MovieInterfaceID>
   ): Promise<void> {
     //Espera a que se resuelva la promesa de la película por ID.
@@ -55,7 +60,7 @@ export default class IndexView {
     if (movieTrailer) {
       movieTrailer.remove();
     }
-  }
+  } */
 
   //Función para obtener el pedazo de documento HTML que representa a cada película.
   getArticle = (movie: MovieInterface): string => {
@@ -78,7 +83,7 @@ export default class IndexView {
   };
 
   //Función para obtener el pedazo de documento HTML que representa el trailer de la película.
-  getArticleTrailer = (movieByID: MovieInterfaceID): string => {
+  /* getArticleTrailer = (movieByID: MovieInterfaceID): string => {
     return `<div class="overlay" id="overlay"></div>
     <div class="movie-trailer" id="movie-trailer">
       <div class="video">
@@ -102,5 +107,5 @@ export default class IndexView {
         </div>
       </div>
     </div>`;
-  };
+  }; */
 }
