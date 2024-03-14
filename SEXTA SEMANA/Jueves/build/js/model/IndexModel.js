@@ -11,26 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export default class IndexModel {
     constructor() {
         this.input = document.querySelector("#input-text");
-        this.filter = this.input.value.toUpperCase();
+        this.btn = document.querySelector("#button-search");
         this.movieCell = document.querySelectorAll(".movie-cell");
-        console.log("IndexModel");
-    }
-    searchBar() {
-        this.movieCell.forEach((movieCell) => {
-            var _a;
-            const h3 = movieCell.getElementsByTagName("h3");
-            for (const element of h3) {
-                const txtValue = (_a = element.textContent) !== null && _a !== void 0 ? _a : element.innerText;
-                if (txtValue.toUpperCase().indexOf(this.filter) > -1) {
-                    if (element.parentElement) {
-                        movieCell.style.display = "";
-                    }
-                }
-                else {
-                    movieCell.style.display = "none";
-                }
-            }
-        });
     }
     //Función para obtener las películas.
     getMovies() {
@@ -78,5 +60,14 @@ export default class IndexModel {
                 });
             });
         });
+    }
+    getButton() {
+        return this.btn;
+    }
+    getInput() {
+        return this.input;
+    }
+    getMovieCell() {
+        return this.movieCell;
     }
 }

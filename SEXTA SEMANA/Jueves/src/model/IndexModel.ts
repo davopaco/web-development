@@ -5,32 +5,16 @@ import { MovieInterfaceID } from "./types/MovieByIDInterface";
 export default class IndexModel {
   private readonly movieCell: HTMLDivElement[];
   private input: HTMLInputElement;
-  private filter: string;
+  private btn: HTMLAnchorElement;
 
   constructor() {
     this.input = document.querySelector("#input-text") as HTMLInputElement;
-    this.filter = this.input.value.toUpperCase();
+    this.btn = document.querySelector("#button-search") as HTMLAnchorElement;
     this.movieCell = document.querySelectorAll(
       ".movie-cell"
     ) as unknown as HTMLDivElement[];
-    console.log("IndexModel");
   }
 
-  public searchBar() {
-    this.movieCell.forEach((movieCell) => {
-      const h3 = movieCell.getElementsByTagName("h3");
-      for (const element of h3) {
-        const txtValue = element.textContent ?? element.innerText;
-        if (txtValue.toUpperCase().indexOf(this.filter) > -1) {
-          if (element.parentElement) {
-            movieCell.style.display = "";
-          }
-        } else {
-          movieCell.style.display = "none";
-        }
-      }
-    });
-  }
   //Función para obtener las películas.
   public async getMovies(): Promise<MovieInterface[]> {
     //Retorna una promesa que resuelve un fetch a la API de las películas.
@@ -79,5 +63,17 @@ export default class IndexModel {
           reject(err);
         });
     });
+  }
+
+  public getButton() {
+    return this.btn;
+  }
+
+  public getInput() {
+    return this.input;
+  }
+
+  public getMovieCell() {
+    return this.movieCell;
   }
 }

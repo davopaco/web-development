@@ -3,25 +3,57 @@ import { Papers } from "../model/types/ArticleInterface.js";
 export default class IndexView {
   //Establece las variables de la clase por Div y Body.
   private readonly sec: HTMLDivElement;
+  private readonly pag0: HTMLDivElement;
+  private readonly articles: string[] = [];
+  private pag: HTMLDivElement[] = [];
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
     this.sec = document.querySelector("#sec") as HTMLDivElement;
+    this.pag0 = document.querySelector(".pag-0") as HTMLDivElement;
   }
   //Función para desplegar las películas en el index.
-  public async deploy(papers: Promise<Papers[]>): Promise<void> {
-    //Espera a que se resuelva la promesa de las películas.
+  public async deploy(
+    papers: Promise<Papers[]>,
+    numberPapers: number
+  ): Promise<void> {
+    await this.deployPag(await papers, numberPapers);
+    this.pag = Array.from(document.querySelectorAll(".pagination"));
+    this.anchorClicked(this.pag);
+    await this.pushArticlesPage(papers);
+    this.deployArticlePag(1);
+  }
+
+  public deployArticlePag(actualPag: number): void {
+    let firstNumber = actualPag * 10 - 10;
+    let lastNumber = actualPag * 10;
+    for (let i = firstNumber; i < lastNumber; i++) {
+      this.sec.innerHTML += this.articles[i];
+    }
+  }
+
+  pushArticlesPage = async (papers: Promise<Papers[]>) => {
     return await papers
       .then((papers) => {
-        //Recorre el array de películas y despliega cada una de ellas.
         papers.forEach((paper) => {
-          //Añade al elemento sec, el artículo de cada película.
-          this.sec.innerHTML += this.getArticle(paper);
+          this.articles.push(this.getArticle(paper));
         });
       })
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  deployPag(papers: Papers[], numberPapers: number): Promise<void> {
+    let pag = Math.ceil(papers.length / numberPapers);
+    if (pag > 5) pag = 5;
+    for (let i = 0; i < pag; i++) {
+      const pageNode = document
+        .createRange()
+        .createContextualFragment(this.getPage(i + 1));
+      this.pag0.insertBefore(pageNode, this.pag0.children[i + 1]);
+    }
+    return Promise.resolve();
   }
 
   //Función para obtener el pedazo de documento HTML que representa a cada película.
@@ -101,10 +133,34 @@ export default class IndexView {
     });
   }
 
+  getPage = (page: number): string => {
+    return `<div class="pag pagination">
+      <a>
+        <span>${page}</span>
+      </a>
+    </div>`;
+  };
+
   public buttonClicked(btn: HTMLInputElement, input: HTMLInputElement) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       this.searchBar("searchh", input);
+    });
+  }
+
+  anchorClicked(pag: HTMLDivElement[]) {
+    pag.forEach((pag) => {
+      if (pag) {
+        pag.addEventListener("click", (e) => {
+          e.preventDefault();
+          console.log(pag);
+          const pageText =
+            pag.firstElementChild?.firstElementChild?.textContent ?? "";
+          const pageNumber = parseInt(pageText);
+          console.log(pageNumber);
+          this.deployArticlePag(pageNumber);
+        });
+      }
     });
   }
 }

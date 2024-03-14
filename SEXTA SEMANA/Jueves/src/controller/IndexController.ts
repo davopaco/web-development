@@ -13,14 +13,14 @@ export default class IndexController {
   //Función para iniciar el controlador desde index.ts
   public start(): void {
     //Despliega la vista usando el modelo obtenido
-    this.view.deploy(this.model.getMovies()); /* .then(() => {
+    this.view.deploy(this.model.getMovies()).then(() => {
       //Despliega el trailer una vez las películas se han renderizado en el HTML.
       this.showTrailer();
-      this.searchBar();
-    }); */
+    });
+    this.view.buttonClicked(this.model.getButton(), this.model.getInput());
   }
 
-  /* async showTrailer(): Promise<void> {
+  async showTrailer(): Promise<void> {
     //Selecciona todos los elementos de la clase movie-cell y que sean el elemento a.
     const trailers = document.querySelectorAll(".movie-cell a");
     //Recorre la lista de nodos.
@@ -48,12 +48,6 @@ export default class IndexController {
     });
   }
 
-  searchBar(): void {
-    this.view.getButton().addEventListener("click", () => {
-      this.model.searchBar();
-    });
-  }
-
   async removeTrailer(): Promise<void> {
     //Trae todos los elementos de la clase movie-trailer que contengan la clase video, que contengan el elemento a.
     const button = document.querySelectorAll(".movie-trailer .video a");
@@ -72,5 +66,5 @@ export default class IndexController {
         { passive: true }
       );
     });
-  } */
+  }
 }

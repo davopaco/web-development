@@ -1,22 +1,17 @@
 import { MovieInterface } from "../model/types/MovieInterface";
-/* import { MovieInterfaceID } from "../model/types/MovieByIDInterface"; */
+import { MovieInterfaceID } from "../model/types/MovieByIDInterface";
 
 export default class IndexView {
   //Establece las variables de la clase por Div y Body.
   private readonly sec: HTMLDivElement;
-  /* private readonly body: HTMLBodyElement;
-  private readonly button: HTMLLinkElement; */
+  private readonly body: HTMLBodyElement;
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
     this.sec = document.querySelector("#sec") as HTMLDivElement;
-    /* this.body = document.body as HTMLBodyElement;
-    this.button = document.querySelector("#button-search") as HTMLLinkElement; */
+    this.body = document.body as HTMLBodyElement;
   }
 
-  /* public getButton(): HTMLLinkElement {
-    return this.button;
-  } */
   //Función para desplegar las películas en el index.
   public async deploy(moviesPromise: Promise<MovieInterface[]>): Promise<void> {
     //Espera a que se resuelva la promesa de las películas.
@@ -33,7 +28,7 @@ export default class IndexView {
       });
   }
 
-  /* public async deployTrailer(
+  public async deployTrailer(
     movieByIDPromise: Promise<MovieInterfaceID>
   ): Promise<void> {
     //Espera a que se resuelva la promesa de la película por ID.
@@ -60,7 +55,7 @@ export default class IndexView {
     if (movieTrailer) {
       movieTrailer.remove();
     }
-  } */
+  }
 
   //Función para obtener el pedazo de documento HTML que representa a cada película.
   getArticle = (movie: MovieInterface): string => {
@@ -70,20 +65,50 @@ export default class IndexView {
       movie.title
     }"></a>
         <div class="text">
-          <h3>${movie.rank}. ${movie.title}</h3>
+          <h3 class="searchh">${movie.rank}. ${movie.title}</h3>
           <p>${movie.year}&emsp;${
       movie.genre != null ? movie.genre[0] : " "
     }</p>
           <p>⭐️&emsp;${movie.rating}</p>
         </div>
         <div class="description">
-          <p>${movie.description}</p>
+          <p class="searchh">${movie.description}</p>
         </div>
       </div>`;
   };
 
+  public searchBar(parameter: string, input: HTMLInputElement) {
+    const cards = document.querySelectorAll(
+      ".movie-cell"
+    ) as unknown as HTMLDivElement[];
+    cards.forEach((card) => {
+      const h3 = card.getElementsByClassName(parameter);
+      let foundMatch = false;
+      for (const element of h3) {
+        const txtValue =
+          (element as HTMLElement).innerText ?? element.textContent;
+        if (txtValue.toUpperCase().indexOf(input.value.toUpperCase()) > -1) {
+          foundMatch = true;
+          break;
+        }
+      }
+      if (foundMatch) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+
+  public buttonClicked(btn: HTMLAnchorElement, input: HTMLInputElement) {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.searchBar("searchh", input);
+    });
+  }
+
   //Función para obtener el pedazo de documento HTML que representa el trailer de la película.
-  /* getArticleTrailer = (movieByID: MovieInterfaceID): string => {
+  getArticleTrailer = (movieByID: MovieInterfaceID): string => {
     return `<div class="overlay" id="overlay"></div>
     <div class="movie-trailer" id="movie-trailer">
       <div class="video">
@@ -107,5 +132,5 @@ export default class IndexView {
         </div>
       </div>
     </div>`;
-  }; */
+  };
 }

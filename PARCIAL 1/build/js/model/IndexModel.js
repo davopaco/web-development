@@ -10,8 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 // Define la clase del modelo.
 export default class IndexModel {
     constructor() {
+        this.paperNumber = 10;
         this.input = document.querySelector("#search-bar");
         this.btn = document.querySelector("#search-btn");
+        this.pag0 = document.querySelector(".pag-0");
     }
     //Función para obtener las películas.
     getPapers() {
@@ -39,5 +41,11 @@ export default class IndexModel {
     }
     getBtn() {
         return this.btn;
+    }
+    getPaperNumber() {
+        return this.paperNumber;
+    }
+    getPag0() {
+        return this.pag0;
     }
 }

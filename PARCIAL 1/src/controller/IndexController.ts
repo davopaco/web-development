@@ -13,7 +13,7 @@ export default class IndexController {
   //Función para iniciar el controlador desde index.ts
   public async start(): Promise<void> {
     //Despliega la vista usando el modelo obtenido
-    await this.view.deploy(this.model.getPapers());
+    await this.view.deploy(this.model.getPapers(), this.model.getPaperNumber());
     this.view.buttonClicked(this.model.getBtn(), this.model.getInput());
   }
 }
