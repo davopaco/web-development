@@ -4,7 +4,10 @@
   "description": "",
   "main": "papers.js",
   "scripts": {
-    "start": "node papers.js"
+    "start": "node papers.js",
+    "build": "tsc",
+    "dev": "ts-node-dev src/papers.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",

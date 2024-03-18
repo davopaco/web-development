@@ -18,7 +18,13 @@ export default class IndexModel {
     getPapers() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield new Promise((resolve, reject) => {
-                const response = fetch("../data.json");
+                const response = fetch("http://localhost:1802/ref/references/", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                console.log(response);
                 response
                     .then((data) => {
                     console.log(data);

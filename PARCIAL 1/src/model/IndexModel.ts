@@ -15,7 +15,13 @@ export default class IndexModel {
 
   public async getPapers(): Promise<Papers[]> {
     return await new Promise((resolve, reject) => {
-      const response = fetch("../data.json");
+      const response = fetch("http://localhost:1802/ref/references/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
       response
         .then((data) => {
           console.log(data);

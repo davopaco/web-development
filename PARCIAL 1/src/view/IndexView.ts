@@ -57,7 +57,12 @@ export default class IndexView {
   deployPag(papers: Papers[], numberPapers: number): Promise<void> {
     let pag = Math.ceil(papers.length / numberPapers);
     const pag0 = document.querySelector(".pag-0") as HTMLDivElement;
+    let currentPage = parseInt(localStorage.getItem("currentPage") ?? "1");
+
     if (pag > 5) pag = 5;
+
+    if (currentPage <= 5) currentPage = 1;
+
     for (let i = 0; i < pag; i++) {
       const pageNode = document
         .createRange()
