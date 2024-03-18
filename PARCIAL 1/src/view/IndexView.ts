@@ -3,21 +3,21 @@ import { Papers } from "../model/types/ArticleInterface.js";
 export default class IndexView {
   //Establece las variables de la clase por Div y Body.
   private readonly sec: HTMLDivElement;
-  private readonly pag0: HTMLDivElement;
+  /* private readonly pag0: HTMLDivElement; */
   private readonly articles: string[] = [];
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
     this.sec = document.querySelector("#sec") as HTMLDivElement;
-    this.pag0 = document.querySelector(".pag-0") as HTMLDivElement;
+    /* this.pag0 = document.querySelector(".pag-0") as HTMLDivElement; */
   }
-  //Función para desplegar las películas en el index.
+
   public async deploy(
     papers: Promise<Papers[]>,
     numberPapers: number,
     currentPage: number = 1
   ): Promise<void> {
-    await this.deployPag(await papers, numberPapers);
+    await this.deployPag(await papers, numberPapers, currentPage);
     await this.pushArticlesPage(papers);
     this.deployArticlePag(currentPage);
   }
@@ -32,8 +32,12 @@ export default class IndexView {
 
   public destroyArticlePag(): Promise<void> {
     const fullCard = document.querySelectorAll(".full-card");
+    const pag = document.querySelectorAll(".numbers");
     fullCard.forEach((card) => {
       card.remove();
+    });
+    pag.forEach((pag) => {
+      pag.remove();
     });
     return Promise.resolve();
   }
@@ -50,21 +54,30 @@ export default class IndexView {
       });
   };
 
-  deployPag(papers: Papers[], numberPapers: number): Promise<void> {
+  deployPag(
+    papers: Papers[],
+    numberPapers: number,
+    currentPage: number
+  ): Promise<void> {
     let pag = Math.ceil(papers.length / numberPapers);
+    let actualPage = "";
+    const pag0 = document.querySelector(".pag-0") as HTMLDivElement;
     if (pag > 5) pag = 5;
     for (let i = 0; i < pag; i++) {
+      if (currentPage === i + 1) {
+        actualPage = "id = 'actual-page'";
+      }
       const pageNode = document
         .createRange()
-        .createContextualFragment(this.getPage(i + 1));
-      this.pag0.insertBefore(pageNode, this.pag0.children[i + 1]);
+        .createContextualFragment(this.getPage(i + 1, actualPage));
+      pag0.insertBefore(pageNode, pag0.children[i + 1]);
     }
     return Promise.resolve();
   }
 
-  //Función para obtener el pedazo de documento HTML que representa a cada película.
+  //Función para obtener el pedazo de documento HTML que representa a cada artículo.
   getArticle = (paper: Papers): string => {
-    //Retorna el pedazo de documento HTML que representa a cada película.
+    //Retorna el pedazo de documento HTML que representa a cada artículo.
     return `<div class="full-card"> <a
     href="${paper._url}">
     <div class="card">
@@ -140,8 +153,8 @@ export default class IndexView {
     });
   }
 
-  getPage = (page: number): string => {
-    return `<div class="pag anchor-pag">
+  getPage = (page: number, actualPage: string): string => {
+    return `<div class="pag anchor-pag numbers" ${actualPage}>
       <a>
         <span>${page}</span>
       </a>
@@ -155,13 +168,9 @@ export default class IndexView {
     });
   }
 
-  anchorClicked(
-    papers: Promise<Papers[]>,
-    numberPapers: number,
-    button: HTMLInputElement,
-    input: HTMLInputElement
-  ) {
+  anchorClicked(papers: Promise<Papers[]>, numberPapers: number) {
     const pag = document.querySelectorAll(".anchor-pag");
+
     pag.forEach((pag) => {
       if (pag) {
         pag.addEventListener("click", (e) => {
@@ -169,12 +178,27 @@ export default class IndexView {
           console.log("click");
           const pageText =
             pag.firstElementChild?.firstElementChild?.textContent ?? "";
-          const pageNumber = parseInt(pageText);
-          console.log(pageNumber);
+          let pageNumber = parseInt(pageText);
+          if (isNaN(pageNumber)) {
+            const direction = pag.getAttribute("id");
+            const currentPage = parseInt(
+              localStorage.getItem("currentPage") ?? "1"
+            );
+            console.log(localStorage.getItem("currentPage"));
+            if (direction === "left" && currentPage === 1) return;
+            if (direction === "left") {
+              pageNumber = currentPage - 1;
+              localStorage.setItem("currentPage", pageNumber.toString());
+            } else {
+              pageNumber = currentPage + 1;
+              localStorage.setItem("currentPage", pageNumber.toString());
+            }
+          } else {
+            localStorage.setItem("currentPage", pageNumber.toString());
+          }
           this.destroyArticlePag().then(async () => {
             await this.deploy(papers, numberPapers, pageNumber);
-            this.buttonClicked(button, input);
-            this.anchorClicked(papers, numberPapers, button, input);
+            this.anchorClicked(papers, numberPapers);
           });
         });
       }

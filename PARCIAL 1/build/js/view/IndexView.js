@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 export default class IndexView {
     constructor() {
+        /* private readonly pag0: HTMLDivElement; */
         this.articles = [];
         this.pushArticlesPage = (papers) => __awaiter(this, void 0, void 0, function* () {
             return yield papers
@@ -21,10 +22,10 @@ export default class IndexView {
                 console.error(err);
             });
         });
-        //Función para obtener el pedazo de documento HTML que representa a cada película.
+        //Función para obtener el pedazo de documento HTML que representa a cada artículo.
         this.getArticle = (paper) => {
             var _a, _b;
-            //Retorna el pedazo de documento HTML que representa a cada película.
+            //Retorna el pedazo de documento HTML que representa a cada artículo.
             return `<div class="full-card"> <a
     href="${paper._url}">
     <div class="card">
@@ -71,8 +72,8 @@ export default class IndexView {
             liString += "</ul>";
             return liString;
         };
-        this.getPage = (page) => {
-            return `<div class="pag anchor-pag">
+        this.getPage = (page, actualPage) => {
+            return `<div class="pag anchor-pag numbers" ${actualPage}>
       <a>
         <span>${page}</span>
       </a>
@@ -80,12 +81,11 @@ export default class IndexView {
         };
         //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
-        this.pag0 = document.querySelector(".pag-0");
+        /* this.pag0 = document.querySelector(".pag-0") as HTMLDivElement; */
     }
-    //Función para desplegar las películas en el index.
     deploy(papers, numberPapers, currentPage = 1) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.deployPag(yield papers, numberPapers);
+            yield this.deployPag(yield papers, numberPapers, currentPage);
             yield this.pushArticlesPage(papers);
             this.deployArticlePag(currentPage);
         });
@@ -99,20 +99,29 @@ export default class IndexView {
     }
     destroyArticlePag() {
         const fullCard = document.querySelectorAll(".full-card");
+        const pag = document.querySelectorAll(".numbers");
         fullCard.forEach((card) => {
             card.remove();
         });
+        pag.forEach((pag) => {
+            pag.remove();
+        });
         return Promise.resolve();
     }
-    deployPag(papers, numberPapers) {
+    deployPag(papers, numberPapers, currentPage) {
         let pag = Math.ceil(papers.length / numberPapers);
+        let actualPage = "";
+        const pag0 = document.querySelector(".pag-0");
         if (pag > 5)
             pag = 5;
         for (let i = 0; i < pag; i++) {
+            if (currentPage === i + 1) {
+                actualPage = "id = 'actual-page'";
+            }
             const pageNode = document
                 .createRange()
-                .createContextualFragment(this.getPage(i + 1));
-            this.pag0.insertBefore(pageNode, this.pag0.children[i + 1]);
+                .createContextualFragment(this.getPage(i + 1, actualPage));
+            pag0.insertBefore(pageNode, pag0.children[i + 1]);
         }
         return Promise.resolve();
     }
@@ -143,21 +152,37 @@ export default class IndexView {
             this.searchBar("searchh", input);
         });
     }
-    anchorClicked(papers, numberPapers, button, input) {
+    anchorClicked(papers, numberPapers) {
         const pag = document.querySelectorAll(".anchor-pag");
         pag.forEach((pag) => {
             if (pag) {
                 pag.addEventListener("click", (e) => {
-                    var _a, _b, _c;
+                    var _a, _b, _c, _d;
                     e.preventDefault();
                     console.log("click");
                     const pageText = (_c = (_b = (_a = pag.firstElementChild) === null || _a === void 0 ? void 0 : _a.firstElementChild) === null || _b === void 0 ? void 0 : _b.textContent) !== null && _c !== void 0 ? _c : "";
-                    const pageNumber = parseInt(pageText);
-                    console.log(pageNumber);
+                    let pageNumber = parseInt(pageText);
+                    if (isNaN(pageNumber)) {
+                        const direction = pag.getAttribute("id");
+                        const currentPage = parseInt((_d = localStorage.getItem("currentPage")) !== null && _d !== void 0 ? _d : "1");
+                        console.log(localStorage.getItem("currentPage"));
+                        if (direction === "left" && currentPage === 1)
+                            return;
+                        if (direction === "left") {
+                            pageNumber = currentPage - 1;
+                            localStorage.setItem("currentPage", pageNumber.toString());
+                        }
+                        else {
+                            pageNumber = currentPage + 1;
+                            localStorage.setItem("currentPage", pageNumber.toString());
+                        }
+                    }
+                    else {
+                        localStorage.setItem("currentPage", pageNumber.toString());
+                    }
                     this.destroyArticlePag().then(() => __awaiter(this, void 0, void 0, function* () {
                         yield this.deploy(papers, numberPapers, pageNumber);
-                        this.buttonClicked(button, input);
-                        this.anchorClicked(papers, numberPapers, button, input);
+                        this.anchorClicked(papers, numberPapers);
                     }));
                 });
             }

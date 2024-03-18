@@ -20,7 +20,8 @@ export default class IndexController {
             //Despliega la vista usando el modelo obtenido
             yield this.view.deploy(this.model.getPapers(), this.model.getPaperNumber());
             this.view.buttonClicked(this.model.getBtn(), this.model.getInput());
-            this.view.anchorClicked(this.model.getPapers(), this.model.getPaperNumber(), this.model.getBtn(), this.model.getInput());
+            this.view.anchorClicked(this.model.getPapers(), this.model.getPaperNumber());
+            localStorage.setItem("currentPage", "1");
         });
     }
 }
