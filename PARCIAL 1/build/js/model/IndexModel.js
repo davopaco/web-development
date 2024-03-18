@@ -15,14 +15,10 @@ export default class IndexModel {
         this.btn = document.querySelector("#search-btn");
         this.pag0 = document.querySelector(".pag-0");
     }
-    //Función para obtener las películas.
     getPapers() {
         return __awaiter(this, void 0, void 0, function* () {
-            //Retorna una promesa que resuelve un fetch a la API de las películas.
             return yield new Promise((resolve, reject) => {
-                //Hace un fetch a la API de las películas.
                 const response = fetch("../data.json");
-                //Si la promesa se resuelve, resuelve la promesa de la función que es la interfaz de películas.
                 response
                     .then((data) => {
                     console.log(data);

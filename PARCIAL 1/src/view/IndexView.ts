@@ -5,7 +5,6 @@ export default class IndexView {
   private readonly sec: HTMLDivElement;
   private readonly pag0: HTMLDivElement;
   private readonly articles: string[] = [];
-  private pag: HTMLDivElement[] = [];
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
@@ -15,13 +14,12 @@ export default class IndexView {
   //Función para desplegar las películas en el index.
   public async deploy(
     papers: Promise<Papers[]>,
-    numberPapers: number
+    numberPapers: number,
+    currentPage: number = 1
   ): Promise<void> {
-    await this.deployPag(await papers, numberPapers);
-    this.pag = Array.from(document.querySelectorAll(".pagination"));
-    this.anchorClicked(this.pag);
+    this.deployPag(await papers, numberPapers);
     await this.pushArticlesPage(papers);
-    this.deployArticlePag(1);
+    this.deployArticlePag(currentPage);
   }
 
   public deployArticlePag(actualPag: number): void {
@@ -30,6 +28,11 @@ export default class IndexView {
     for (let i = firstNumber; i < lastNumber; i++) {
       this.sec.innerHTML += this.articles[i];
     }
+  }
+
+  public destroyArticlePag(): Promise<void> {
+    this.sec.innerHTML = "";
+    return Promise.resolve();
   }
 
   pushArticlesPage = async (papers: Promise<Papers[]>) => {
@@ -134,7 +137,7 @@ export default class IndexView {
   }
 
   getPage = (page: number): string => {
-    return `<div class="pag pagination">
+    return `<div class="pag anchor-pag">
       <a>
         <span>${page}</span>
       </a>
@@ -148,17 +151,27 @@ export default class IndexView {
     });
   }
 
-  anchorClicked(pag: HTMLDivElement[]) {
+  anchorClicked(
+    papers: Promise<Papers[]>,
+    numberPapers: number,
+    button: HTMLInputElement,
+    input: HTMLInputElement
+  ) {
+    const pag = document.querySelectorAll(".anchor-pag");
     pag.forEach((pag) => {
       if (pag) {
         pag.addEventListener("click", (e) => {
           e.preventDefault();
-          console.log(pag);
+          console.log("click");
           const pageText =
             pag.firstElementChild?.firstElementChild?.textContent ?? "";
           const pageNumber = parseInt(pageText);
           console.log(pageNumber);
-          this.deployArticlePag(pageNumber);
+          this.destroyArticlePag().then(async () => {
+            await this.deploy(papers, numberPapers, pageNumber);
+            this.buttonClicked(button, input);
+            this.anchorClicked(papers, numberPapers, button, input);
+          });
         });
       }
     });

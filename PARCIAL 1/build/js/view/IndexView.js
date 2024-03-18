@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export default class IndexView {
     constructor() {
         this.articles = [];
-        this.pag = [];
         this.pushArticlesPage = (papers) => __awaiter(this, void 0, void 0, function* () {
             return yield papers
                 .then((papers) => {
@@ -72,7 +71,7 @@ export default class IndexView {
             return liString;
         };
         this.getPage = (page) => {
-            return `<div class="pag pagination">
+            return `<div class="pag anchor-pag">
       <a>
         <span>${page}</span>
       </a>
@@ -83,13 +82,11 @@ export default class IndexView {
         this.pag0 = document.querySelector(".pag-0");
     }
     //Función para desplegar las películas en el index.
-    deploy(papers, numberPapers) {
+    deploy(papers, numberPapers, currentPage = 1) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.deployPag(yield papers, numberPapers);
-            this.pag = Array.from(document.querySelectorAll(".pagination"));
-            this.anchorClicked(this.pag);
+            this.deployPag(yield papers, numberPapers);
             yield this.pushArticlesPage(papers);
-            this.deployArticlePag(1);
+            this.deployArticlePag(currentPage);
         });
     }
     deployArticlePag(actualPag) {
@@ -98,6 +95,10 @@ export default class IndexView {
         for (let i = firstNumber; i < lastNumber; i++) {
             this.sec.innerHTML += this.articles[i];
         }
+    }
+    destroyArticlePag() {
+        this.sec.innerHTML = "";
+        return Promise.resolve();
     }
     deployPag(papers, numberPapers) {
         let pag = Math.ceil(papers.length / numberPapers);
@@ -138,17 +139,22 @@ export default class IndexView {
             this.searchBar("searchh", input);
         });
     }
-    anchorClicked(pag) {
+    anchorClicked(papers, numberPapers, button, input) {
+        const pag = document.querySelectorAll(".anchor-pag");
         pag.forEach((pag) => {
             if (pag) {
                 pag.addEventListener("click", (e) => {
                     var _a, _b, _c;
                     e.preventDefault();
-                    console.log(pag);
+                    console.log("click");
                     const pageText = (_c = (_b = (_a = pag.firstElementChild) === null || _a === void 0 ? void 0 : _a.firstElementChild) === null || _b === void 0 ? void 0 : _b.textContent) !== null && _c !== void 0 ? _c : "";
                     const pageNumber = parseInt(pageText);
                     console.log(pageNumber);
-                    this.deployArticlePag(pageNumber);
+                    this.destroyArticlePag().then(() => __awaiter(this, void 0, void 0, function* () {
+                        yield this.deploy(papers, numberPapers, pageNumber);
+                        this.buttonClicked(button, input);
+                        this.anchorClicked(papers, numberPapers, button, input);
+                    }));
                 });
             }
         });
