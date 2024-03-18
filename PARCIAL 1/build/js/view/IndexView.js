@@ -72,8 +72,8 @@ export default class IndexView {
             liString += "</ul>";
             return liString;
         };
-        this.getPage = (page, actualPage) => {
-            return `<div class="pag anchor-pag numbers" ${actualPage}>
+        this.getPage = (page) => {
+            return `<div class="pag anchor-pag numbers">
       <a>
         <span>${page}</span>
       </a>
@@ -85,7 +85,7 @@ export default class IndexView {
     }
     deploy(papers, numberPapers, currentPage = 1) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.deployPag(yield papers, numberPapers, currentPage);
+            yield this.deployPag(yield papers, numberPapers);
             yield this.pushArticlesPage(papers);
             this.deployArticlePag(currentPage);
         });
@@ -108,19 +108,15 @@ export default class IndexView {
         });
         return Promise.resolve();
     }
-    deployPag(papers, numberPapers, currentPage) {
+    deployPag(papers, numberPapers) {
         let pag = Math.ceil(papers.length / numberPapers);
-        let actualPage = "";
         const pag0 = document.querySelector(".pag-0");
         if (pag > 5)
             pag = 5;
         for (let i = 0; i < pag; i++) {
-            if (currentPage === i + 1) {
-                actualPage = "id = 'actual-page'";
-            }
             const pageNode = document
                 .createRange()
-                .createContextualFragment(this.getPage(i + 1, actualPage));
+                .createContextualFragment(this.getPage(i + 1));
             pag0.insertBefore(pageNode, pag0.children[i + 1]);
         }
         return Promise.resolve();

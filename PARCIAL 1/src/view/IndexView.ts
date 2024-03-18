@@ -17,7 +17,7 @@ export default class IndexView {
     numberPapers: number,
     currentPage: number = 1
   ): Promise<void> {
-    await this.deployPag(await papers, numberPapers, currentPage);
+    await this.deployPag(await papers, numberPapers);
     await this.pushArticlesPage(papers);
     this.deployArticlePag(currentPage);
   }
@@ -54,22 +54,14 @@ export default class IndexView {
       });
   };
 
-  deployPag(
-    papers: Papers[],
-    numberPapers: number,
-    currentPage: number
-  ): Promise<void> {
+  deployPag(papers: Papers[], numberPapers: number): Promise<void> {
     let pag = Math.ceil(papers.length / numberPapers);
-    let actualPage = "";
     const pag0 = document.querySelector(".pag-0") as HTMLDivElement;
     if (pag > 5) pag = 5;
     for (let i = 0; i < pag; i++) {
-      if (currentPage === i + 1) {
-        actualPage = "id = 'actual-page'";
-      }
       const pageNode = document
         .createRange()
-        .createContextualFragment(this.getPage(i + 1, actualPage));
+        .createContextualFragment(this.getPage(i + 1));
       pag0.insertBefore(pageNode, pag0.children[i + 1]);
     }
     return Promise.resolve();
@@ -153,8 +145,8 @@ export default class IndexView {
     });
   }
 
-  getPage = (page: number, actualPage: string): string => {
-    return `<div class="pag anchor-pag numbers" ${actualPage}>
+  getPage = (page: number): string => {
+    return `<div class="pag anchor-pag numbers">
       <a>
         <span>${page}</span>
       </a>
