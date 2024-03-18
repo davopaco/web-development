@@ -25,7 +25,7 @@ export default class IndexView {
         this.getArticle = (paper) => {
             var _a, _b;
             //Retorna el pedazo de documento HTML que representa a cada película.
-            return `<a
+            return `<div class="full-card"> <a
     href="${paper._url}">
     <div class="card">
       <div class="card-logo">
@@ -59,7 +59,8 @@ export default class IndexView {
         </div>
       </div>
     </div>
-  </a>`;
+  </a>
+  </div>`;
         };
         this.getKeywords = (paper) => {
             const keywords = paper._keywords.split(",");
@@ -84,7 +85,7 @@ export default class IndexView {
     //Función para desplegar las películas en el index.
     deploy(papers, numberPapers, currentPage = 1) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.deployPag(yield papers, numberPapers);
+            yield this.deployPag(yield papers, numberPapers);
             yield this.pushArticlesPage(papers);
             this.deployArticlePag(currentPage);
         });
@@ -97,7 +98,10 @@ export default class IndexView {
         }
     }
     destroyArticlePag() {
-        this.sec.innerHTML = "";
+        const fullCard = document.querySelectorAll(".full-card");
+        fullCard.forEach((card) => {
+            card.remove();
+        });
         return Promise.resolve();
     }
     deployPag(papers, numberPapers) {

@@ -17,7 +17,7 @@ export default class IndexView {
     numberPapers: number,
     currentPage: number = 1
   ): Promise<void> {
-    this.deployPag(await papers, numberPapers);
+    await this.deployPag(await papers, numberPapers);
     await this.pushArticlesPage(papers);
     this.deployArticlePag(currentPage);
   }
@@ -31,7 +31,10 @@ export default class IndexView {
   }
 
   public destroyArticlePag(): Promise<void> {
-    this.sec.innerHTML = "";
+    const fullCard = document.querySelectorAll(".full-card");
+    fullCard.forEach((card) => {
+      card.remove();
+    });
     return Promise.resolve();
   }
 
@@ -62,7 +65,7 @@ export default class IndexView {
   //Función para obtener el pedazo de documento HTML que representa a cada película.
   getArticle = (paper: Papers): string => {
     //Retorna el pedazo de documento HTML que representa a cada película.
-    return `<a
+    return `<div class="full-card"> <a
     href="${paper._url}">
     <div class="card">
       <div class="card-logo">
@@ -100,7 +103,8 @@ export default class IndexView {
         </div>
       </div>
     </div>
-  </a>`;
+  </a>
+  </div>`;
   };
 
   getKeywords = (paper: Papers): string => {
