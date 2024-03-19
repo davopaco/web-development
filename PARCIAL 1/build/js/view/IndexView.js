@@ -90,6 +90,8 @@ export default class IndexView {
                 if (keyword !== "")
                     keywords.push(keyword);
             });
+            if (keywords.length === 0)
+                return articlesArray;
             articlesArray.forEach((article) => {
                 var _a;
                 const articleHTML = parser.parseFromString(article, "text/html");

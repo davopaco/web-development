@@ -205,6 +205,8 @@ export default class IndexView {
       if (keyword !== "") keywords.push(keyword);
     });
 
+    if (keywords.length === 0) return articlesArray;
+
     articlesArray.forEach((article) => {
       const articleHTML = parser.parseFromString(article, "text/html");
       const card = articleHTML.querySelector(".card") as HTMLDivElement;

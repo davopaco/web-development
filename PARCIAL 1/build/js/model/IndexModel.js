@@ -52,4 +52,7 @@ export default class IndexModel {
     getFilter() {
         return this.filter;
     }
+    setLocalStorage() {
+        localStorage.setItem("currentPage", "1");
+    }
 }
