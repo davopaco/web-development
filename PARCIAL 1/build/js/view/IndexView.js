@@ -74,18 +74,21 @@ export default class IndexView {
             liString += "</ul>";
             return liString;
         };
-        this.filterByKeyword = (articles, parameter) => {
+        this.filterByKeyword = (articles, parameter, filter) => {
             const parser = new DOMParser();
             const articlesArray = articles;
             const articlesArray2 = [];
             const radio = document.getElementsByName("radio");
-            let label = "";
+            const keywords = [];
             radio.forEach((radio) => {
                 var _a, _b;
                 if (radio.checked) {
-                    label =
-                        (_a = radio.nextElementSibling.innerText) !== null && _a !== void 0 ? _a : (_b = radio.nextElementSibling) === null || _b === void 0 ? void 0 : _b.textContent;
+                    keywords.push((_a = radio.nextElementSibling.innerText) !== null && _a !== void 0 ? _a : (_b = radio.nextElementSibling) === null || _b === void 0 ? void 0 : _b.textContent);
                 }
+            });
+            filter.value.split(", ").forEach((keyword) => {
+                if (keyword !== "")
+                    keywords.push(keyword);
             });
             articlesArray.forEach((article) => {
                 var _a;
@@ -95,10 +98,11 @@ export default class IndexView {
                 let foundMatch = false;
                 for (const element of h3) {
                     const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
-                    if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
-                        foundMatch = true;
-                        break;
-                    }
+                    keywords.forEach((label) => {
+                        if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
+                            foundMatch = true;
+                        }
+                    });
                 }
                 if (foundMatch) {
                     articlesArray2.push(article);
@@ -190,7 +194,7 @@ export default class IndexView {
         pag0.innerHTML += this.getPageDirection("right");
         return Promise.resolve();
     }
-    searchBar(parameter, input, parameter2, numberPapers = 10) {
+    searchBar(parameter, input, filter, parameter2, numberPapers = 10) {
         const parser = new DOMParser();
         let articlesArray = [];
         this.articles.forEach((article) => {
@@ -210,7 +214,7 @@ export default class IndexView {
                 articlesArray.push(article);
             }
         });
-        articlesArray = this.filterByKeyword(articlesArray, parameter2);
+        articlesArray = this.filterByKeyword(articlesArray, parameter2, filter);
         this.setArticles(articlesArray);
         this.numberPages = Math.ceil(articlesArray.length / numberPapers);
         this.destroyArticlePag().then(() => __awaiter(this, void 0, void 0, function* () {
@@ -219,10 +223,10 @@ export default class IndexView {
             this.anchorClicked(10);
         }));
     }
-    buttonClicked(btn, input) {
+    buttonClicked(btn, input, filter) {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
-            this.searchBar("searchh", input, "keyword");
+            this.searchBar("searchh", input, filter, "keyword");
         });
     }
     anchorClicked(numberPapers) {

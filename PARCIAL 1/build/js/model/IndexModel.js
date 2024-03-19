@@ -14,7 +14,7 @@ export default class IndexModel {
         this.input = document.querySelector("#search-bar");
         this.btn = document.querySelector("#search-btn");
         this.pag0 = document.querySelector(".pag-0");
-        this.radio = document.querySelector("#radio");
+        this.filter = document.querySelector("#inloc");
     }
     getPapers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -49,7 +49,7 @@ export default class IndexModel {
     getPag0() {
         return this.pag0;
     }
-    getRadio() {
-        return this.radio;
+    getFilter() {
+        return this.filter;
     }
 }

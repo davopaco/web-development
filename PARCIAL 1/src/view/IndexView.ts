@@ -145,6 +145,7 @@ export default class IndexView {
   public searchBar(
     parameter: string,
     input: HTMLInputElement,
+    filter: HTMLInputElement,
     parameter2: string,
     numberPapers: number = 10
   ) {
@@ -168,7 +169,7 @@ export default class IndexView {
         articlesArray.push(article);
       }
     });
-    articlesArray = this.filterByKeyword(articlesArray, parameter2);
+    articlesArray = this.filterByKeyword(articlesArray, parameter2, filter);
     this.setArticles(articlesArray);
     this.numberPages = Math.ceil(articlesArray.length / numberPapers);
     this.destroyArticlePag().then(async () => {
@@ -178,21 +179,30 @@ export default class IndexView {
     });
   }
 
-  filterByKeyword = (articles: string[], parameter: string) => {
+  filterByKeyword = (
+    articles: string[],
+    parameter: string,
+    filter: HTMLInputElement
+  ) => {
     const parser = new DOMParser();
     const articlesArray: string[] = articles;
     const articlesArray2: string[] = [];
     const radio = document.getElementsByName(
       "radio"
     ) as NodeListOf<HTMLInputElement>;
-    let label: string = "";
+    const keywords: string[] = [];
 
     radio.forEach((radio) => {
       if (radio.checked) {
-        label =
+        keywords.push(
           (radio.nextElementSibling as HTMLElement).innerText ??
-          radio.nextElementSibling?.textContent;
+            radio.nextElementSibling?.textContent
+        );
       }
+    });
+
+    filter.value.split(", ").forEach((keyword) => {
+      if (keyword !== "") keywords.push(keyword);
     });
 
     articlesArray.forEach((article) => {
@@ -203,10 +213,11 @@ export default class IndexView {
       for (const element of h3) {
         const txtValue =
           (element as HTMLElement).innerText ?? element.textContent;
-        if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
-          foundMatch = true;
-          break;
-        }
+        keywords.forEach((label) => {
+          if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
+            foundMatch = true;
+          }
+        });
       }
       if (foundMatch) {
         articlesArray2.push(article);
@@ -245,10 +256,14 @@ export default class IndexView {
     this.articlesDynamic = articles;
   };
 
-  public buttonClicked(btn: HTMLInputElement, input: HTMLInputElement) {
+  public buttonClicked(
+    btn: HTMLInputElement,
+    input: HTMLInputElement,
+    filter: HTMLInputElement
+  ) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      this.searchBar("searchh", input, "keyword");
+      this.searchBar("searchh", input, filter, "keyword");
     });
   }
 
