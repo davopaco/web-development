@@ -12,7 +12,6 @@ export default class IndexController {
     constructor(view, model) {
         this.view = view;
         this.model = model;
-        console.log("IndexController");
     }
     //Función para iniciar el controlador desde index.ts
     start() {

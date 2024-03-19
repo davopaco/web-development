@@ -24,10 +24,8 @@ export default class IndexModel {
                         "Content-Type": "application/json",
                     },
                 });
-                console.log(response);
                 response
                     .then((data) => {
-                    console.log(data);
                     data.json().then((data) => {
                         resolve(data.papers);
                     });

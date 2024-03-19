@@ -6,9 +6,7 @@ export default class IndexController {
   constructor(
     private readonly view: IndexView,
     private readonly model: IndexModel
-  ) {
-    console.log("IndexController");
-  }
+  ) {}
 
   //Función para iniciar el controlador desde index.ts
   public async start(): Promise<void> {
