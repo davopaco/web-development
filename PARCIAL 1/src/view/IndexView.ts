@@ -5,6 +5,8 @@ export default class IndexView {
   private readonly sec: HTMLDivElement;
   /* private readonly pag0: HTMLDivElement; */
   private readonly articles: string[] = [];
+  private articlesDynamic: string[] = [];
+  private numberPages: number = 0;
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
@@ -15,18 +17,20 @@ export default class IndexView {
   public async deploy(
     papers: Promise<Papers[]>,
     numberPapers: number,
-    currentPage: number = 1
+    currentPage: number = 1,
+    articles: string[] = this.articles
   ): Promise<void> {
-    await this.deployPag(await papers, numberPapers);
     await this.pushArticlesPage(papers);
-    this.deployArticlePag(currentPage);
+    await this.deployPag(articles, numberPapers);
+    this.deployArticlePag(currentPage, articles);
   }
 
-  public deployArticlePag(actualPag: number): void {
+  public deployArticlePag(actualPag: number, articles: string[]): void {
     let firstNumber = actualPag * 10 - 10;
     let lastNumber = actualPag * 10;
+    if (lastNumber > articles.length) lastNumber = articles.length;
     for (let i = firstNumber; i < lastNumber; i++) {
-      this.sec.innerHTML += this.articles[i];
+      this.sec.innerHTML += articles[i];
     }
   }
 
@@ -48,27 +52,31 @@ export default class IndexView {
         papers.forEach((paper) => {
           this.articles.push(this.getArticle(paper));
         });
+        this.setArticles(this.articles);
       })
       .catch((err) => {
         console.error(err);
       });
   };
 
-  deployPag(papers: Papers[], numberPapers: number): Promise<void> {
-    let pag = Math.ceil(papers.length / numberPapers);
+  deployPag(articles: string[], numberPapers: number): Promise<void> {
+    let pag = Math.ceil(articles.length / numberPapers);
+    this.numberPages = pag;
+
     const pag0 = document.querySelector(".pag-0") as HTMLDivElement;
+
+    pag0.innerHTML = "";
+
     let currentPage = parseInt(localStorage.getItem("currentPage") ?? "1");
 
     if (pag > 5) pag = 5;
 
     if (currentPage <= 5) currentPage = 1;
-
+    pag0.innerHTML += this.getPageDirection("left");
     for (let i = 0; i < pag; i++) {
-      const pageNode = document
-        .createRange()
-        .createContextualFragment(this.getPage(i + 1));
-      pag0.insertBefore(pageNode, pag0.children[i + 1]);
+      pag0.innerHTML += this.getPage(i + 1);
     }
+    pag0.innerHTML += this.getPageDirection("right");
     return Promise.resolve();
   }
 
@@ -127,11 +135,16 @@ export default class IndexView {
     return liString;
   };
 
-  public searchBar(parameter: string, input: HTMLInputElement) {
-    const cards = document.querySelectorAll(
-      ".card"
-    ) as unknown as HTMLDivElement[];
-    cards.forEach((card) => {
+  public searchBar(
+    parameter: string,
+    input: HTMLInputElement,
+    numberPapers: number = 10
+  ) {
+    const parser = new DOMParser();
+    const articlesArray: string[] = [];
+    this.articles.forEach((article) => {
+      const articleHTML = parser.parseFromString(article, "text/html");
+      const card = articleHTML.querySelector(".card") as HTMLDivElement;
       const h3 = card.getElementsByClassName(parameter);
       let foundMatch = false;
       for (const element of h3) {
@@ -143,10 +156,15 @@ export default class IndexView {
         }
       }
       if (foundMatch) {
-        card.style.display = "";
-      } else {
-        card.style.display = "none";
+        articlesArray.push(article);
       }
+    });
+    this.setArticles(articlesArray);
+    this.numberPages = Math.ceil(articlesArray.length / numberPapers);
+    this.destroyArticlePag().then(async () => {
+      await this.deployPag(articlesArray, numberPapers);
+      this.deployArticlePag(1, articlesArray);
+      this.anchorClicked(10);
     });
   }
 
@@ -158,6 +176,28 @@ export default class IndexView {
     </div>`;
   };
 
+  getPageDirection = (direction: string): string => {
+    let directionText = "";
+    if (direction === "left") {
+      directionText = `<div class="pag anchor-pag" id="left">
+              <a href=""><span><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                  </svg></span></a>
+            </div>`;
+    } else if (direction === "right") {
+      directionText = `<div class="pag anchor-pag" id="right">
+              <a href=""><span><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                  </svg></span></a>
+            </div>`;
+    }
+    return directionText;
+  };
+
+  setArticles = (articles: string[]) => {
+    this.articlesDynamic = articles;
+  };
+
   public buttonClicked(btn: HTMLInputElement, input: HTMLInputElement) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -165,37 +205,40 @@ export default class IndexView {
     });
   }
 
-  anchorClicked(papers: Promise<Papers[]>, numberPapers: number) {
+  anchorClicked(numberPapers: number) {
     const pag = document.querySelectorAll(".anchor-pag");
-
     pag.forEach((pag) => {
       if (pag) {
         pag.addEventListener("click", (e) => {
           e.preventDefault();
-          console.log("click");
           const pageText =
             pag.firstElementChild?.firstElementChild?.textContent ?? "";
           let pageNumber = parseInt(pageText);
+          if (
+            pageNumber === parseInt(localStorage.getItem("currentPage") ?? "")
+          )
+            return;
           if (isNaN(pageNumber)) {
             const direction = pag.getAttribute("id");
             const currentPage = parseInt(
               localStorage.getItem("currentPage") ?? "1"
             );
-            console.log(localStorage.getItem("currentPage"));
             if (direction === "left" && currentPage === 1) return;
             if (direction === "left") {
               pageNumber = currentPage - 1;
-              localStorage.setItem("currentPage", pageNumber.toString());
             } else {
               pageNumber = currentPage + 1;
-              localStorage.setItem("currentPage", pageNumber.toString());
             }
-          } else {
-            localStorage.setItem("currentPage", pageNumber.toString());
+            if (pageNumber > this.numberPages) return;
           }
+          localStorage.setItem("currentPage", pageNumber.toString());
           this.destroyArticlePag().then(async () => {
-            await this.deploy(papers, numberPapers, pageNumber);
-            this.anchorClicked(papers, numberPapers);
+            await this.deployPag(this.articlesDynamic, numberPapers);
+            this.deployArticlePag(
+              parseInt(localStorage.getItem("currentPage") ?? ""),
+              this.articlesDynamic
+            );
+            this.anchorClicked(numberPapers);
           });
         });
       }

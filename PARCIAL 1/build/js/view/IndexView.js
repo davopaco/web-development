@@ -11,12 +11,15 @@ export default class IndexView {
     constructor() {
         /* private readonly pag0: HTMLDivElement; */
         this.articles = [];
+        this.articlesDynamic = [];
+        this.numberPages = 0;
         this.pushArticlesPage = (papers) => __awaiter(this, void 0, void 0, function* () {
             return yield papers
                 .then((papers) => {
                 papers.forEach((paper) => {
                     this.articles.push(this.getArticle(paper));
                 });
+                this.setArticles(this.articles);
             })
                 .catch((err) => {
                 console.error(err);
@@ -79,22 +82,45 @@ export default class IndexView {
       </a>
     </div>`;
         };
+        this.getPageDirection = (direction) => {
+            let directionText = "";
+            if (direction === "left") {
+                directionText = `<div class="pag anchor-pag" id="left">
+              <a href=""><span><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                  </svg></span></a>
+            </div>`;
+            }
+            else if (direction === "right") {
+                directionText = `<div class="pag anchor-pag" id="right">
+              <a href=""><span><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                  </svg></span></a>
+            </div>`;
+            }
+            return directionText;
+        };
+        this.setArticles = (articles) => {
+            this.articlesDynamic = articles;
+        };
         //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
         /* this.pag0 = document.querySelector(".pag-0") as HTMLDivElement; */
     }
-    deploy(papers, numberPapers, currentPage = 1) {
+    deploy(papers, numberPapers, currentPage = 1, articles = this.articles) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.deployPag(yield papers, numberPapers);
             yield this.pushArticlesPage(papers);
-            this.deployArticlePag(currentPage);
+            yield this.deployPag(articles, numberPapers);
+            this.deployArticlePag(currentPage, articles);
         });
     }
-    deployArticlePag(actualPag) {
+    deployArticlePag(actualPag, articles) {
         let firstNumber = actualPag * 10 - 10;
         let lastNumber = actualPag * 10;
+        if (lastNumber > articles.length)
+            lastNumber = articles.length;
         for (let i = firstNumber; i < lastNumber; i++) {
-            this.sec.innerHTML += this.articles[i];
+            this.sec.innerHTML += articles[i];
         }
     }
     destroyArticlePag() {
@@ -108,27 +134,31 @@ export default class IndexView {
         });
         return Promise.resolve();
     }
-    deployPag(papers, numberPapers) {
+    deployPag(articles, numberPapers) {
         var _a;
-        let pag = Math.ceil(papers.length / numberPapers);
+        let pag = Math.ceil(articles.length / numberPapers);
+        this.numberPages = pag;
         const pag0 = document.querySelector(".pag-0");
+        pag0.innerHTML = "";
         let currentPage = parseInt((_a = localStorage.getItem("currentPage")) !== null && _a !== void 0 ? _a : "1");
         if (pag > 5)
             pag = 5;
         if (currentPage <= 5)
             currentPage = 1;
+        pag0.innerHTML += this.getPageDirection("left");
         for (let i = 0; i < pag; i++) {
-            const pageNode = document
-                .createRange()
-                .createContextualFragment(this.getPage(i + 1));
-            pag0.insertBefore(pageNode, pag0.children[i + 1]);
+            pag0.innerHTML += this.getPage(i + 1);
         }
+        pag0.innerHTML += this.getPageDirection("right");
         return Promise.resolve();
     }
-    searchBar(parameter, input) {
-        const cards = document.querySelectorAll(".card");
-        cards.forEach((card) => {
+    searchBar(parameter, input, numberPapers = 10) {
+        const parser = new DOMParser();
+        const articlesArray = [];
+        this.articles.forEach((article) => {
             var _a;
+            const articleHTML = parser.parseFromString(article, "text/html");
+            const card = articleHTML.querySelector(".card");
             const h3 = card.getElementsByClassName(parameter);
             let foundMatch = false;
             for (const element of h3) {
@@ -139,12 +169,16 @@ export default class IndexView {
                 }
             }
             if (foundMatch) {
-                card.style.display = "";
-            }
-            else {
-                card.style.display = "none";
+                articlesArray.push(article);
             }
         });
+        this.setArticles(articlesArray);
+        this.numberPages = Math.ceil(articlesArray.length / numberPapers);
+        this.destroyArticlePag().then(() => __awaiter(this, void 0, void 0, function* () {
+            yield this.deployPag(articlesArray, numberPapers);
+            this.deployArticlePag(1, articlesArray);
+            this.anchorClicked(10);
+        }));
     }
     buttonClicked(btn, input) {
         btn.addEventListener("click", (e) => {
@@ -152,37 +186,37 @@ export default class IndexView {
             this.searchBar("searchh", input);
         });
     }
-    anchorClicked(papers, numberPapers) {
+    anchorClicked(numberPapers) {
         const pag = document.querySelectorAll(".anchor-pag");
         pag.forEach((pag) => {
             if (pag) {
                 pag.addEventListener("click", (e) => {
-                    var _a, _b, _c, _d;
+                    var _a, _b, _c, _d, _e;
                     e.preventDefault();
-                    console.log("click");
                     const pageText = (_c = (_b = (_a = pag.firstElementChild) === null || _a === void 0 ? void 0 : _a.firstElementChild) === null || _b === void 0 ? void 0 : _b.textContent) !== null && _c !== void 0 ? _c : "";
                     let pageNumber = parseInt(pageText);
+                    if (pageNumber === parseInt((_d = localStorage.getItem("currentPage")) !== null && _d !== void 0 ? _d : ""))
+                        return;
                     if (isNaN(pageNumber)) {
                         const direction = pag.getAttribute("id");
-                        const currentPage = parseInt((_d = localStorage.getItem("currentPage")) !== null && _d !== void 0 ? _d : "1");
-                        console.log(localStorage.getItem("currentPage"));
+                        const currentPage = parseInt((_e = localStorage.getItem("currentPage")) !== null && _e !== void 0 ? _e : "1");
                         if (direction === "left" && currentPage === 1)
                             return;
                         if (direction === "left") {
                             pageNumber = currentPage - 1;
-                            localStorage.setItem("currentPage", pageNumber.toString());
                         }
                         else {
                             pageNumber = currentPage + 1;
-                            localStorage.setItem("currentPage", pageNumber.toString());
                         }
+                        if (pageNumber > this.numberPages)
+                            return;
                     }
-                    else {
-                        localStorage.setItem("currentPage", pageNumber.toString());
-                    }
+                    localStorage.setItem("currentPage", pageNumber.toString());
                     this.destroyArticlePag().then(() => __awaiter(this, void 0, void 0, function* () {
-                        yield this.deploy(papers, numberPapers, pageNumber);
-                        this.anchorClicked(papers, numberPapers);
+                        var _f;
+                        yield this.deployPag(this.articlesDynamic, numberPapers);
+                        this.deployArticlePag(parseInt((_f = localStorage.getItem("currentPage")) !== null && _f !== void 0 ? _f : ""), this.articlesDynamic);
+                        this.anchorClicked(numberPapers);
                     }));
                 });
             }
