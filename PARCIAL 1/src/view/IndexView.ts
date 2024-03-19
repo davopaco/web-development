@@ -142,6 +142,9 @@ export default class IndexView {
       pag0.innerHTML += this.getPageDirection("right");
     }
 
+    //Llama a la función setColor para establecer los estilos del div de la paginación.
+    this.setColor();
+
     return Promise.resolve();
   }
 
@@ -206,7 +209,7 @@ export default class IndexView {
 
   //Función para obtener la parte del documento HTML que representa a cada número de página.
   getPage = (page: number): string => {
-    return `<div class="pag anchor-pag">
+    return `<div class="pag">
       <a>
         <span>${page}</span>
       </a>
@@ -268,7 +271,7 @@ export default class IndexView {
   //Función para establecer el evento de click en los números de página y botones de dirección.
   anchorClicked(numberPapers: number) {
     //Selecciona todos los elementos de clase pag que son los contenedores para los números de la paginación.
-    const pag = document.querySelectorAll(".pag");
+    const pag = document.querySelectorAll(".pag") as NodeListOf<HTMLDivElement>;
 
     //Recorre todos los elementos de clase pag y establece el evento de click para cada uno.
     pag.forEach((pag) => {
@@ -330,6 +333,25 @@ export default class IndexView {
       }
     });
   }
+
+  //Función para establecer los estilos del div de la paginación.
+  setColor = () => {
+    //Selecciona todos los elementos de clase pag.
+    const pag = document.querySelectorAll(".pag") as NodeListOf<HTMLDivElement>;
+
+    //Recorre todos los elementos de clase pag y establece el color y borde para el número de página actual.
+    pag.forEach((pag) => {
+      if (pag) {
+        if (
+          (pag.firstElementChild?.firstElementChild?.textContent ?? "") ===
+          localStorage.getItem("currentPage")
+        ) {
+          pag.style.color = "#5e84f8";
+          pag.style.border = "2px solid #5e84f8";
+        }
+      }
+    });
+  };
 
   //Función para realizar la búsqueda de artículos dependiendo de los parámetros e inputs.
   searchBar(

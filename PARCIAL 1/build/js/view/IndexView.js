@@ -74,7 +74,7 @@ export default class IndexView {
         };
         //Función para obtener la parte del documento HTML que representa a cada número de página.
         this.getPage = (page) => {
-            return `<div class="pag anchor-pag">
+            return `<div class="pag">
       <a>
         <span>${page}</span>
       </a>
@@ -92,6 +92,22 @@ export default class IndexView {
                   </svg>`;
             return `<div class="pag anchor-pag" id="${direction}"><a href=""><span>${arrow}</span></a>
             </div>`;
+        };
+        //Función para establecer los estilos del div de la paginación.
+        this.setColor = () => {
+            //Selecciona todos los elementos de clase pag.
+            const pag = document.querySelectorAll(".pag");
+            //Recorre todos los elementos de clase pag y establece el color y borde para el número de página actual.
+            pag.forEach((pag) => {
+                var _a, _b, _c;
+                if (pag) {
+                    if (((_c = (_b = (_a = pag.firstElementChild) === null || _a === void 0 ? void 0 : _a.firstElementChild) === null || _b === void 0 ? void 0 : _b.textContent) !== null && _c !== void 0 ? _c : "") ===
+                        localStorage.getItem("currentPage")) {
+                        pag.style.color = "#5e84f8";
+                        pag.style.border = "2px solid #5e84f8";
+                    }
+                }
+            });
         };
         //Función para filtrar los artículos según las keywords.
         this.filterByKeyword = (articles, parameter, filter, radio, functionalities) => {
@@ -191,6 +207,8 @@ export default class IndexView {
         if (currentPage !== pag) {
             pag0.innerHTML += this.getPageDirection("right");
         }
+        //Llama a la función setColor para establecer los estilos del div de la paginación.
+        this.setColor();
         return Promise.resolve();
     }
     //Función para establecer los eventos de los botones para la página web.
