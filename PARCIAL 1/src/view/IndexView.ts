@@ -68,7 +68,6 @@ export default class IndexView {
   ): Promise<void> {
     let pag = Math.ceil(articles.length / numberPapers);
     const pag0 = document.querySelector(".pag-0") as HTMLDivElement;
-    console.log("Deploying pag", pag);
 
     this.numberPages = pag;
     pag0.innerHTML = "";
@@ -90,11 +89,15 @@ export default class IndexView {
     }
     if (lastNumber > pag) lastNumber = pag;
 
-    pag0.innerHTML += this.getPageDirection("left");
+    if (currentPage !== 1) {
+      pag0.innerHTML += this.getPageDirection("left");
+    }
     for (let i = firstNumber; i <= lastNumber; i++) {
       pag0.innerHTML += this.getPage(i);
     }
-    pag0.innerHTML += this.getPageDirection("right");
+    if (currentPage !== pag) {
+      pag0.innerHTML += this.getPageDirection("right");
+    }
 
     return Promise.resolve();
   }

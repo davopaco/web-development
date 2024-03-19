@@ -137,7 +137,6 @@ export default class IndexView {
         var _a;
         let pag = Math.ceil(articles.length / numberPapers);
         const pag0 = document.querySelector(".pag-0");
-        console.log("Deploying pag", pag);
         this.numberPages = pag;
         pag0.innerHTML = "";
         if (reset) {
@@ -156,11 +155,15 @@ export default class IndexView {
         }
         if (lastNumber > pag)
             lastNumber = pag;
-        pag0.innerHTML += this.getPageDirection("left");
+        if (currentPage !== 1) {
+            pag0.innerHTML += this.getPageDirection("left");
+        }
         for (let i = firstNumber; i <= lastNumber; i++) {
             pag0.innerHTML += this.getPage(i);
         }
-        pag0.innerHTML += this.getPageDirection("right");
+        if (currentPage !== pag) {
+            pag0.innerHTML += this.getPageDirection("right");
+        }
         return Promise.resolve();
     }
     buttonClicked(btn, input, filter, functionalities) {
