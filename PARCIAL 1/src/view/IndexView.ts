@@ -1,16 +1,21 @@
 import { Papers } from "../model/types/ArticleInterface.js";
+import searchingFunctionalitiesInterface from "../model/types/FunctionsInterface.js";
 
 export default class IndexView {
-  //Establece las variables de la clase por Div y Body.
+  //Establece las variables de la clase por Div.
   private readonly sec: HTMLDivElement;
-  /* private readonly pag0: HTMLDivElement; */
-  private readonly articles: string[] = [];
-  private articlesDynamic: string[] = [];
-  private numberPages: number = 0;
+  private readonly articles: string[];
+  private articlesDynamic: string[];
+  private numberPages: number;
+  private pag0: HTMLDivElement;
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
     this.sec = document.querySelector("#sec") as HTMLDivElement;
+    this.pag0 = document.querySelector(".pag-0") as HTMLDivElement;
+    this.articles = [];
+    this.articlesDynamic = [];
+    this.numberPages = 0;
   }
 
   public async deploy(
@@ -24,24 +29,22 @@ export default class IndexView {
     this.deployArticlePag(currentPage, articles);
   }
 
+  //Método para desplegar los artículos en la página.
   public deployArticlePag(actualPag: number, articles: string[]): void {
+    //Se especifican el primero y el último artículo a desplegar.
     let firstNumber = actualPag * 10 - 10;
-    let lastNumber = actualPag * 10;
-    if (lastNumber > articles.length) lastNumber = articles.length;
-    for (let i = firstNumber; i < lastNumber; i++) {
-      this.sec.innerHTML += articles[i];
-    }
+    let lastNumber = Math.min(actualPag * 10, articles.length);
+
+    //Se despliegan los artículos en el innerHTML del Div padre.
+    this.sec.innerHTML += articles.slice(firstNumber, lastNumber).join("");
   }
 
   public destroyArticlePag(): Promise<void> {
     const fullCard = document.querySelectorAll(".full-card");
-    const pag = document.querySelectorAll(".numbers");
     fullCard.forEach((card) => {
       card.remove();
     });
-    pag.forEach((pag) => {
-      pag.remove();
-    });
+    this.pag0.innerHTML = "";
     return Promise.resolve();
   }
 
@@ -58,17 +61,26 @@ export default class IndexView {
       });
   };
 
-  deployPag(articles: string[], numberPapers: number): Promise<void> {
+  deployPag(
+    articles: string[],
+    numberPapers: number,
+    reset = false
+  ): Promise<void> {
     let pag = Math.ceil(articles.length / numberPapers);
-    this.numberPages = pag;
-
     const pag0 = document.querySelector(".pag-0") as HTMLDivElement;
+    console.log("Deploying pag", pag);
 
+    this.numberPages = pag;
     pag0.innerHTML = "";
+
+    if (reset) {
+      localStorage.setItem("currentPage", "1");
+    }
 
     const currentPage = parseInt(localStorage.getItem("currentPage") ?? "1");
     let firstNumber = 1;
     let lastNumber = 5;
+
     if ((currentPage - 1) % 5 === 0) {
       firstNumber = currentPage;
       lastNumber = currentPage + 4;
@@ -83,6 +95,7 @@ export default class IndexView {
       pag0.innerHTML += this.getPage(i);
     }
     pag0.innerHTML += this.getPageDirection("right");
+
     return Promise.resolve();
   }
 
@@ -142,94 +155,6 @@ export default class IndexView {
     return liString;
   };
 
-  public searchBar(
-    parameter: string,
-    input: HTMLInputElement,
-    filter: HTMLInputElement,
-    parameter2: string,
-    numberPapers: number = 10
-  ) {
-    const parser = new DOMParser();
-    let articlesArray: string[] = [];
-
-    this.articles.forEach((article) => {
-      const articleHTML = parser.parseFromString(article, "text/html");
-      const card = articleHTML.querySelector(".card") as HTMLDivElement;
-      const h3 = card.getElementsByClassName(parameter);
-      let foundMatch = false;
-      for (const element of h3) {
-        const txtValue =
-          (element as HTMLElement).innerText ?? element.textContent;
-        if (txtValue.toUpperCase().indexOf(input.value.toUpperCase()) > -1) {
-          foundMatch = true;
-          break;
-        }
-      }
-      if (foundMatch) {
-        articlesArray.push(article);
-      }
-    });
-    articlesArray = this.filterByKeyword(articlesArray, parameter2, filter);
-    this.setArticles(articlesArray);
-    this.numberPages = Math.ceil(articlesArray.length / numberPapers);
-    this.destroyArticlePag().then(async () => {
-      await this.deployPag(articlesArray, numberPapers);
-      this.deployArticlePag(1, articlesArray);
-      this.anchorClicked(10);
-    });
-  }
-
-  filterByKeyword = (
-    articles: string[],
-    parameter: string,
-    filter: HTMLInputElement
-  ) => {
-    const parser = new DOMParser();
-    const articlesArray: string[] = articles;
-    const articlesArray2: string[] = [];
-    const radio = document.getElementsByName(
-      "radio"
-    ) as NodeListOf<HTMLInputElement>;
-    const keywords: string[] = [];
-
-    radio.forEach((radio) => {
-      if (radio.checked) {
-        keywords.push(
-          (radio.nextElementSibling as HTMLElement).innerText ??
-            radio.nextElementSibling?.textContent
-        );
-      }
-    });
-
-    filter.value.split(", ").forEach((keyword) => {
-      if (keyword !== "") keywords.push(keyword);
-    });
-
-    if (keywords.length === 0) return articlesArray;
-
-    articlesArray.forEach((article) => {
-      const articleHTML = parser.parseFromString(article, "text/html");
-      const card = articleHTML.querySelector(".card") as HTMLDivElement;
-      const h3 = card.getElementsByClassName(parameter);
-      let matchQuantity = 0;
-      keywords.forEach((label) => {
-        for (const element of h3) {
-          const txtValue =
-            (element as HTMLElement).innerText ?? element.textContent;
-          if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
-            matchQuantity++;
-            break;
-          }
-        }
-      });
-      if (matchQuantity === keywords.length) {
-        articlesArray2.push(article);
-      }
-    });
-    console.log(keywords);
-    return articlesArray2;
-  };
-
   getPage = (page: number): string => {
     return `<div class="pag anchor-pag numbers">
       <a>
@@ -256,18 +181,15 @@ export default class IndexView {
     return directionText;
   };
 
-  setArticles = (articles: string[]) => {
-    this.articlesDynamic = articles;
-  };
-
   public buttonClicked(
     btn: HTMLInputElement,
     input: HTMLInputElement,
-    filter: HTMLInputElement
+    filter: HTMLInputElement,
+    functionalities: searchingFunctionalitiesInterface
   ) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      this.searchBar("searchh", input, filter, "keyword");
+      this.searchBar("searchh", input, filter, "keyword", functionalities);
     });
   }
 
@@ -310,4 +232,57 @@ export default class IndexView {
       }
     });
   }
+
+  searchBar(
+    parameter: string,
+    input: HTMLInputElement,
+    filter: HTMLInputElement,
+    parameter2: string,
+    functionalities: searchingFunctionalitiesInterface,
+    numberPapers: number = 10
+  ) {
+    let articlesArray = functionalities.searchBar(
+      parameter,
+      input,
+      this.articles
+    );
+    articlesArray = this.filterByKeyword(
+      articlesArray,
+      parameter2,
+      filter,
+      functionalities
+    );
+    this.setArticles(articlesArray);
+    this.numberPages = Math.ceil(articlesArray.length / numberPapers);
+
+    this.destroyArticlePag().then(async () => {
+      await this.deployPag(articlesArray, numberPapers, true);
+      this.deployArticlePag(1, articlesArray);
+      this.anchorClicked(10);
+    });
+  }
+
+  filterByKeyword = (
+    articles: string[],
+    parameter: string,
+    filter: HTMLInputElement,
+    functionalities: searchingFunctionalitiesInterface
+  ) => {
+    const radio = document.getElementsByName(
+      "radio"
+    ) as NodeListOf<HTMLInputElement>;
+
+    let articlesArray = functionalities.filterByKeyword(
+      articles,
+      parameter,
+      filter,
+      radio
+    );
+
+    return articlesArray;
+  };
+
+  setArticles = (articles: string[]) => {
+    this.articlesDynamic = articles;
+  };
 }

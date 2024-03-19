@@ -13,7 +13,6 @@ export default class IndexModel {
         this.paperNumber = 10;
         this.input = document.querySelector("#search-bar");
         this.btn = document.querySelector("#search-btn");
-        this.pag0 = document.querySelector(".pag-0");
         this.filter = document.querySelector("#inloc");
     }
     getPapers() {
@@ -46,13 +45,68 @@ export default class IndexModel {
     getPaperNumber() {
         return this.paperNumber;
     }
-    getPag0() {
-        return this.pag0;
-    }
     getFilter() {
         return this.filter;
     }
-    setLocalStorage() {
-        localStorage.setItem("currentPage", "1");
+    searchingFunctionalities() {
+        return {
+            searchBar(parameter, input, articles) {
+                const parser = new DOMParser();
+                let articlesArray = [];
+                articles.forEach((article) => {
+                    var _a;
+                    const articleHTML = parser.parseFromString(article, "text/html");
+                    const foundElements = articleHTML.getElementsByClassName(parameter);
+                    let foundMatch = false;
+                    for (const element of foundElements) {
+                        const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
+                        if (txtValue.toUpperCase().indexOf(input.value.toUpperCase()) > -1) {
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+                    if (foundMatch) {
+                        articlesArray.push(article);
+                    }
+                });
+                return articlesArray;
+            },
+            filterByKeyword(articles, parameter, filter, radio) {
+                const parser = new DOMParser();
+                const articlesArray = [];
+                const keywords = [];
+                radio.forEach((radio) => {
+                    var _a, _b;
+                    if (radio.checked) {
+                        keywords.push((_a = radio.nextElementSibling.innerText) !== null && _a !== void 0 ? _a : (_b = radio.nextElementSibling) === null || _b === void 0 ? void 0 : _b.textContent);
+                    }
+                });
+                filter.value.split(", ").forEach((keyword) => {
+                    if (keyword !== "")
+                        keywords.push(keyword);
+                });
+                if (keywords.length === 0)
+                    return articles;
+                articles.forEach((article) => {
+                    const articleHTML = parser.parseFromString(article, "text/html");
+                    const foundElements = articleHTML.getElementsByClassName(parameter);
+                    let matchQuantity = 0;
+                    keywords.forEach((label) => {
+                        var _a;
+                        for (const element of foundElements) {
+                            const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
+                            if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
+                                matchQuantity++;
+                                break;
+                            }
+                        }
+                    });
+                    if (matchQuantity === keywords.length) {
+                        articlesArray.push(article);
+                    }
+                });
+                return articlesArray;
+            },
+        };
     }
 }

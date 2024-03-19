@@ -15,7 +15,8 @@ export default class IndexController {
     this.view.buttonClicked(
       this.model.getBtn(),
       this.model.getInput(),
-      this.model.getFilter()
+      this.model.getFilter(),
+      this.model.searchingFunctionalities()
     );
     this.view.anchorClicked(this.model.getPaperNumber());
     localStorage.setItem("currentPage", "1");

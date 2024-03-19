@@ -9,10 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 export default class IndexView {
     constructor() {
-        /* private readonly pag0: HTMLDivElement; */
-        this.articles = [];
-        this.articlesDynamic = [];
-        this.numberPages = 0;
         this.pushArticlesPage = (papers) => __awaiter(this, void 0, void 0, function* () {
             return yield papers
                 .then((papers) => {
@@ -74,46 +70,6 @@ export default class IndexView {
             liString += "</ul>";
             return liString;
         };
-        this.filterByKeyword = (articles, parameter, filter) => {
-            const parser = new DOMParser();
-            const articlesArray = articles;
-            const articlesArray2 = [];
-            const radio = document.getElementsByName("radio");
-            const keywords = [];
-            radio.forEach((radio) => {
-                var _a, _b;
-                if (radio.checked) {
-                    keywords.push((_a = radio.nextElementSibling.innerText) !== null && _a !== void 0 ? _a : (_b = radio.nextElementSibling) === null || _b === void 0 ? void 0 : _b.textContent);
-                }
-            });
-            filter.value.split(", ").forEach((keyword) => {
-                if (keyword !== "")
-                    keywords.push(keyword);
-            });
-            if (keywords.length === 0)
-                return articlesArray;
-            articlesArray.forEach((article) => {
-                const articleHTML = parser.parseFromString(article, "text/html");
-                const card = articleHTML.querySelector(".card");
-                const h3 = card.getElementsByClassName(parameter);
-                let matchQuantity = 0;
-                keywords.forEach((label) => {
-                    var _a;
-                    for (const element of h3) {
-                        const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
-                        if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
-                            matchQuantity++;
-                            break;
-                        }
-                    }
-                });
-                if (matchQuantity === keywords.length) {
-                    articlesArray2.push(article);
-                }
-            });
-            console.log(keywords);
-            return articlesArray2;
-        };
         this.getPage = (page) => {
             return `<div class="pag anchor-pag numbers">
       <a>
@@ -139,11 +95,20 @@ export default class IndexView {
             }
             return directionText;
         };
+        this.filterByKeyword = (articles, parameter, filter, functionalities) => {
+            const radio = document.getElementsByName("radio");
+            let articlesArray = functionalities.filterByKeyword(articles, parameter, filter, radio);
+            return articlesArray;
+        };
         this.setArticles = (articles) => {
             this.articlesDynamic = articles;
         };
         //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
+        this.pag0 = document.querySelector(".pag-0");
+        this.articles = [];
+        this.articlesDynamic = [];
+        this.numberPages = 0;
     }
     deploy(papers, numberPapers, currentPage = 1, articles = this.articles) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -152,32 +117,32 @@ export default class IndexView {
             this.deployArticlePag(currentPage, articles);
         });
     }
+    //Método para desplegar los artículos en la página.
     deployArticlePag(actualPag, articles) {
+        //Se especifican el primero y el último artículo a desplegar.
         let firstNumber = actualPag * 10 - 10;
-        let lastNumber = actualPag * 10;
-        if (lastNumber > articles.length)
-            lastNumber = articles.length;
-        for (let i = firstNumber; i < lastNumber; i++) {
-            this.sec.innerHTML += articles[i];
-        }
+        let lastNumber = Math.min(actualPag * 10, articles.length);
+        //Se despliegan los artículos en el innerHTML del Div padre.
+        this.sec.innerHTML += articles.slice(firstNumber, lastNumber).join("");
     }
     destroyArticlePag() {
         const fullCard = document.querySelectorAll(".full-card");
-        const pag = document.querySelectorAll(".numbers");
         fullCard.forEach((card) => {
             card.remove();
         });
-        pag.forEach((pag) => {
-            pag.remove();
-        });
+        this.pag0.innerHTML = "";
         return Promise.resolve();
     }
-    deployPag(articles, numberPapers) {
+    deployPag(articles, numberPapers, reset = false) {
         var _a;
         let pag = Math.ceil(articles.length / numberPapers);
-        this.numberPages = pag;
         const pag0 = document.querySelector(".pag-0");
+        console.log("Deploying pag", pag);
+        this.numberPages = pag;
         pag0.innerHTML = "";
+        if (reset) {
+            localStorage.setItem("currentPage", "1");
+        }
         const currentPage = parseInt((_a = localStorage.getItem("currentPage")) !== null && _a !== void 0 ? _a : "1");
         let firstNumber = 1;
         let lastNumber = 5;
@@ -198,39 +163,10 @@ export default class IndexView {
         pag0.innerHTML += this.getPageDirection("right");
         return Promise.resolve();
     }
-    searchBar(parameter, input, filter, parameter2, numberPapers = 10) {
-        const parser = new DOMParser();
-        let articlesArray = [];
-        this.articles.forEach((article) => {
-            var _a;
-            const articleHTML = parser.parseFromString(article, "text/html");
-            const card = articleHTML.querySelector(".card");
-            const h3 = card.getElementsByClassName(parameter);
-            let foundMatch = false;
-            for (const element of h3) {
-                const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
-                if (txtValue.toUpperCase().indexOf(input.value.toUpperCase()) > -1) {
-                    foundMatch = true;
-                    break;
-                }
-            }
-            if (foundMatch) {
-                articlesArray.push(article);
-            }
-        });
-        articlesArray = this.filterByKeyword(articlesArray, parameter2, filter);
-        this.setArticles(articlesArray);
-        this.numberPages = Math.ceil(articlesArray.length / numberPapers);
-        this.destroyArticlePag().then(() => __awaiter(this, void 0, void 0, function* () {
-            yield this.deployPag(articlesArray, numberPapers);
-            this.deployArticlePag(1, articlesArray);
-            this.anchorClicked(10);
-        }));
-    }
-    buttonClicked(btn, input, filter) {
+    buttonClicked(btn, input, filter, functionalities) {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
-            this.searchBar("searchh", input, filter, "keyword");
+            this.searchBar("searchh", input, filter, "keyword", functionalities);
         });
     }
     anchorClicked(numberPapers) {
@@ -268,5 +204,16 @@ export default class IndexView {
                 });
             }
         });
+    }
+    searchBar(parameter, input, filter, parameter2, functionalities, numberPapers = 10) {
+        let articlesArray = functionalities.searchBar(parameter, input, this.articles);
+        articlesArray = this.filterByKeyword(articlesArray, parameter2, filter, functionalities);
+        this.setArticles(articlesArray);
+        this.numberPages = Math.ceil(articlesArray.length / numberPapers);
+        this.destroyArticlePag().then(() => __awaiter(this, void 0, void 0, function* () {
+            yield this.deployPag(articlesArray, numberPapers, true);
+            this.deployArticlePag(1, articlesArray);
+            this.anchorClicked(10);
+        }));
     }
 }
