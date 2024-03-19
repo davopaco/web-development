@@ -16,8 +16,9 @@ export default class IndexController {
     //Función para iniciar el controlador desde index.ts
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            //Despliega la vista usando el modelo obtenido
-            yield this.view.deploy(this.model.getPapers(), this.model.getPaperNumber(), this.model.searchingFunctionalities(), this.model.getBtn(), this.model.getInput(), this.model.getFilter());
+            //Despliega la vista usando los métodos del modelo.
+            yield this.view.deploy(this.model.getPapers(), this.model.getPaperNumber(), this.model.searchingFunctionalities(), this.model.getBtn(), this.model.getInput(), this.model.getFilter(), this.model.getRadio());
+            //Se asigna el valor de la página actual a 1.
             localStorage.setItem("currentPage", "1");
         });
     }
