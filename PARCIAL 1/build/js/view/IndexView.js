@@ -285,7 +285,6 @@ export default class IndexView {
             .searchBar(parameter, input, this.articles)
             .slice();
         let articlesArray2 = articlesArray.slice();
-        console.log(articlesArray2);
         articlesArray.length = 0;
         //Basado en los valores para el array que obtuvo en la búsqueda principal, filtra los artículos según las keywords.
         articlesArray.push(...this.filterByKeyword(articlesArray2, parameter2, filter, radio, functionalities));

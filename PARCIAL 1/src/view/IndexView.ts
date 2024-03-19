@@ -368,7 +368,6 @@ export default class IndexView {
       .searchBar(parameter, input, this.articles)
       .slice();
     let articlesArray2: string[] = articlesArray.slice();
-    console.log(articlesArray2);
 
     articlesArray.length = 0;
 
