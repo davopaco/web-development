@@ -105,7 +105,6 @@ export default class IndexView {
         };
         //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
-        /* this.pag0 = document.querySelector(".pag-0") as HTMLDivElement; */
     }
     deploy(papers, numberPapers, currentPage = 1, articles = this.articles) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -140,14 +139,20 @@ export default class IndexView {
         this.numberPages = pag;
         const pag0 = document.querySelector(".pag-0");
         pag0.innerHTML = "";
-        let currentPage = parseInt((_a = localStorage.getItem("currentPage")) !== null && _a !== void 0 ? _a : "1");
-        if (pag > 5)
-            pag = 5;
-        if (currentPage <= 5)
-            currentPage = 1;
+        const currentPage = parseInt((_a = localStorage.getItem("currentPage")) !== null && _a !== void 0 ? _a : "1");
+        let firstNumber = 1;
+        let lastNumber = 5;
+        if ((currentPage - 1) % 5 === 0) {
+            firstNumber = currentPage;
+            lastNumber = currentPage + 4;
+        }
+        else {
+            firstNumber = Math.floor((currentPage - 1) / 5) * 5 + 1;
+            lastNumber = firstNumber + 4;
+        }
         pag0.innerHTML += this.getPageDirection("left");
-        for (let i = 0; i < pag; i++) {
-            pag0.innerHTML += this.getPage(i + 1);
+        for (let i = firstNumber; i <= lastNumber; i++) {
+            pag0.innerHTML += this.getPage(i);
         }
         pag0.innerHTML += this.getPageDirection("right");
         return Promise.resolve();
