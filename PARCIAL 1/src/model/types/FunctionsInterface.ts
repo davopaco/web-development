@@ -1,3 +1,4 @@
+//Define la interfaz de las funciones de búsqueda
 export default interface searchingFunctionalitiesInterface {
   searchBar(
     parameter: string,

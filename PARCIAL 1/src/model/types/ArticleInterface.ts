@@ -1,8 +1,9 @@
-// Define la interfaz de la película
+// Define la interfaz de los artículos
 export interface Articles {
   papers: Papers[];
 }
 
+//Define la interfaz de los papers
 export interface Papers {
   _pt: string;
   _abstract: string;
