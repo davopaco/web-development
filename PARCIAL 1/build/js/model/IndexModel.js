@@ -63,11 +63,11 @@ export default class IndexModel {
     searchingFunctionalities() {
         //Se crea un parser para convertir el string de HTML a un objeto de tipo Document.
         const parser = new DOMParser();
-        //Se crea un array de strings para guardar los artículos que cumplan con el criterio de búsqueda.
-        let articlesArray = [];
         return {
             //Función para buscar en los artículos por el parámetro especificado.
             searchBar(parameter, input, articles) {
+                //Se crea un array de strings para guardar los artículos que cumplan con el criterio de búsqueda.
+                let articlesArray = [];
                 //Se itera sobre cada artículo.
                 articles.forEach((article) => {
                     var _a;
@@ -97,6 +97,8 @@ export default class IndexModel {
             //Función para filtrar los artículos por el parámetro especificado.
             filterByKeyword(articles, parameter, filter, radio) {
                 const keywords = [];
+                //Se crea un array de strings para guardar los artículos que cumplan con el criterio de búsqueda.
+                let articlesArray = [];
                 //Se itera sobre los radios para hacer push al array de keywords, dependiendo del valor del label de los radios.
                 radio.forEach((radio) => {
                     var _a, _b;

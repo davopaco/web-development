@@ -233,7 +233,7 @@ export default class IndexView {
   };
 
   //Función para establecer los eventos de los botones para la página web.
-  clickers(
+  async clickers(
     functionalities: searchingFunctionalitiesInterface,
     numberPapers: number,
     btn: HTMLInputElement,
@@ -364,21 +364,24 @@ export default class IndexView {
     numberPapers: number = 10
   ) {
     //Obtiene el valor del input de búsqueda principal.
-    let articlesArray = functionalities.searchBar(
-      parameter,
-      input,
-      this.articles
-    );
+    let articlesArray = functionalities
+      .searchBar(parameter, input, this.articles)
+      .slice();
+    let articlesArray2: string[] = articlesArray.slice();
+    console.log(articlesArray2);
+
+    articlesArray.length = 0;
 
     //Basado en los valores para el array que obtuvo en la búsqueda principal, filtra los artículos según las keywords.
-    articlesArray = this.filterByKeyword(
-      articlesArray,
-      parameter2,
-      filter,
-      radio,
-      functionalities
+    articlesArray.push(
+      ...this.filterByKeyword(
+        articlesArray2,
+        parameter2,
+        filter,
+        radio,
+        functionalities
+      )
     );
-
     //Establece el array de artículos dinámico como el array de artículos filtrado.
     this.setArticles(articlesArray);
 
@@ -417,6 +420,7 @@ export default class IndexView {
 
   //Función para establecer el array de artículos dinámico.
   setArticles = (articles: string[]) => {
-    this.articlesDynamic = articles;
+    this.articlesDynamic.length = 0;
+    this.articlesDynamic.push(...articles);
   };
 }

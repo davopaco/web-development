@@ -118,7 +118,8 @@ export default class IndexView {
         };
         //Función para establecer el array de artículos dinámico.
         this.setArticles = (articles) => {
-            this.articlesDynamic = articles;
+            this.articlesDynamic.length = 0;
+            this.articlesDynamic.push(...articles);
         };
         //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
@@ -213,8 +214,10 @@ export default class IndexView {
     }
     //Función para establecer los eventos de los botones para la página web.
     clickers(functionalities, numberPapers, btn, input, filter, radio) {
-        this.buttonClicked(btn, input, filter, radio, functionalities);
-        this.anchorClicked(numberPapers);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.buttonClicked(btn, input, filter, radio, functionalities);
+            this.anchorClicked(numberPapers);
+        });
     }
     //Función para establecer el evento de click en el botón de búsqueda.
     buttonClicked(btn, input, filter, radio, functionalities) {
@@ -278,9 +281,14 @@ export default class IndexView {
     //Función para realizar la búsqueda de artículos dependiendo de los parámetros e inputs.
     searchBar(parameter, input, filter, parameter2, functionalities, radio, numberPapers = 10) {
         //Obtiene el valor del input de búsqueda principal.
-        let articlesArray = functionalities.searchBar(parameter, input, this.articles);
+        let articlesArray = functionalities
+            .searchBar(parameter, input, this.articles)
+            .slice();
+        let articlesArray2 = articlesArray.slice();
+        console.log(articlesArray2);
+        articlesArray.length = 0;
         //Basado en los valores para el array que obtuvo en la búsqueda principal, filtra los artículos según las keywords.
-        articlesArray = this.filterByKeyword(articlesArray, parameter2, filter, radio, functionalities);
+        articlesArray.push(...this.filterByKeyword(articlesArray2, parameter2, filter, radio, functionalities));
         //Establece el array de artículos dinámico como el array de artículos filtrado.
         this.setArticles(articlesArray);
         //Establece el número de páginas con respecto al número de artículos por página y el array de artículos filtrado.
