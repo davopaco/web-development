@@ -6,11 +6,13 @@ export default class IndexModel {
   private readonly btn: HTMLInputElement;
   private readonly paperNumber: number = 10;
   private readonly pag0: HTMLDivElement;
+  private readonly radio: HTMLInputElement;
 
   constructor() {
     this.input = document.querySelector("#search-bar") as HTMLInputElement;
     this.btn = document.querySelector("#search-btn") as HTMLInputElement;
     this.pag0 = document.querySelector(".pag-0") as HTMLDivElement;
+    this.radio = document.querySelector("#radio") as HTMLInputElement;
   }
 
   public async getPapers(): Promise<Papers[]> {
@@ -47,5 +49,9 @@ export default class IndexModel {
 
   public getPag0() {
     return this.pag0;
+  }
+
+  public getRadio() {
+    return this.radio;
   }
 }

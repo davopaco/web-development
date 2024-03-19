@@ -76,6 +76,7 @@ export default class IndexView {
       firstNumber = Math.floor((currentPage - 1) / 5) * 5 + 1;
       lastNumber = firstNumber + 4;
     }
+    if (lastNumber > pag) lastNumber = pag;
 
     pag0.innerHTML += this.getPageDirection("left");
     for (let i = firstNumber; i <= lastNumber; i++) {
@@ -106,9 +107,10 @@ export default class IndexView {
         <h4>Keywords</h4>
         ${this.getKeywords(paper)}
         <div class="card-footer">
-          <div class="card-footer-1"><span class="card-footer-full">${paper._pt
-            .split("@")[1]
-            .toLocaleLowerCase()}</span></div>
+          <div class="card-footer-1"><span class="card-footer-full">${
+            paper._pt.split("@")[1].charAt(0).toLocaleUpperCase() +
+            paper._pt.split("@")[1].slice(1).toLocaleLowerCase()
+          }</span></div>
           <div class="card-footer-2"><span class="card-footer-span searchh"><span><svg
                   xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                   class="bi bi-building-fill" viewBox="0 0 16 16">
@@ -134,7 +136,7 @@ export default class IndexView {
     const keywords = paper._keywords.split(",");
     let liString: string = "<ul>";
     keywords.forEach((keyword) => {
-      liString += `<li>${keyword}</li>`;
+      liString += `<li class="keyword">${keyword}</li>`;
     });
     liString += "</ul>";
     return liString;
@@ -143,10 +145,12 @@ export default class IndexView {
   public searchBar(
     parameter: string,
     input: HTMLInputElement,
+    parameter2: string,
     numberPapers: number = 10
   ) {
     const parser = new DOMParser();
-    const articlesArray: string[] = [];
+    let articlesArray: string[] = [];
+
     this.articles.forEach((article) => {
       const articleHTML = parser.parseFromString(article, "text/html");
       const card = articleHTML.querySelector(".card") as HTMLDivElement;
@@ -164,6 +168,7 @@ export default class IndexView {
         articlesArray.push(article);
       }
     });
+    articlesArray = this.filterByKeyword(articlesArray, parameter2);
     this.setArticles(articlesArray);
     this.numberPages = Math.ceil(articlesArray.length / numberPapers);
     this.destroyArticlePag().then(async () => {
@@ -172,6 +177,43 @@ export default class IndexView {
       this.anchorClicked(10);
     });
   }
+
+  filterByKeyword = (articles: string[], parameter: string) => {
+    const parser = new DOMParser();
+    const articlesArray: string[] = articles;
+    const articlesArray2: string[] = [];
+    const radio = document.getElementsByName(
+      "radio"
+    ) as NodeListOf<HTMLInputElement>;
+    let label: string = "";
+
+    radio.forEach((radio) => {
+      if (radio.checked) {
+        label =
+          (radio.nextElementSibling as HTMLElement).innerText ??
+          radio.nextElementSibling?.textContent;
+      }
+    });
+
+    articlesArray.forEach((article) => {
+      const articleHTML = parser.parseFromString(article, "text/html");
+      const card = articleHTML.querySelector(".card") as HTMLDivElement;
+      const h3 = card.getElementsByClassName(parameter);
+      let foundMatch = false;
+      for (const element of h3) {
+        const txtValue =
+          (element as HTMLElement).innerText ?? element.textContent;
+        if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
+          foundMatch = true;
+          break;
+        }
+      }
+      if (foundMatch) {
+        articlesArray2.push(article);
+      }
+    });
+    return articlesArray2;
+  };
 
   getPage = (page: number): string => {
     return `<div class="pag anchor-pag numbers">
@@ -206,7 +248,7 @@ export default class IndexView {
   public buttonClicked(btn: HTMLInputElement, input: HTMLInputElement) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      this.searchBar("searchh", input);
+      this.searchBar("searchh", input, "keyword");
     });
   }
 
