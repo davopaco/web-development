@@ -43,7 +43,7 @@ export default class IndexView {
         <div class="card-footer">
           <div class="card-footer-1"><span class="card-footer-full">${paper._pt.split("@")[1].charAt(0).toLocaleUpperCase() +
                 paper._pt.split("@")[1].slice(1).toLocaleLowerCase()}</span></div>
-          <div class="card-footer-2"><span class="card-footer-span searchh"><span><svg
+          <div class="card-footer-2"><span class="card-footer-span"><span><svg
                   xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                   class="bi bi-building-fill" viewBox="0 0 16 16">
                   <path
@@ -54,7 +54,7 @@ export default class IndexView {
                   <path
                     d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
                   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
-                </svg></span>&nbsp;${paper._year}</span></div>
+                </svg></span>&nbsp;<span class="searchh">${paper._year}</span></span></div>
         </div>
       </div>
     </div>
@@ -105,16 +105,22 @@ export default class IndexView {
         };
         //Asigna a las variables de la clase los elementos del DOM.
         this.sec = document.querySelector("#sec");
-        this.pag0 = document.querySelector(".pag-0");
         this.articles = [];
         this.articlesDynamic = [];
         this.numberPages = 0;
     }
-    deploy(papers, numberPapers, currentPage = 1, articles = this.articles) {
+    deploy(papers, numberPapers, functionalities, btn, input, filter, currentPage = 1, articles = this.articles) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.pushArticlesPage(papers);
             yield this.deployPag(articles, numberPapers);
             this.deployArticlePag(currentPage, articles);
+            this.clickers(functionalities, numberPapers, btn, input, filter);
+        });
+    }
+    clickers(functionalities, numberPapers, btn, input, filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.buttonClicked(btn, input, filter, functionalities);
+            this.anchorClicked(numberPapers);
         });
     }
     //Método para desplegar los artículos en la página.
@@ -127,10 +133,11 @@ export default class IndexView {
     }
     destroyArticlePag() {
         const fullCard = document.querySelectorAll(".full-card");
+        const pag0 = document.querySelector(".pag-0");
         fullCard.forEach((card) => {
             card.remove();
         });
-        this.pag0.innerHTML = "";
+        pag0.innerHTML = "";
         return Promise.resolve();
     }
     deployPag(articles, numberPapers, reset = false) {

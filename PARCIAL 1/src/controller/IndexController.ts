@@ -11,14 +11,14 @@ export default class IndexController {
   //Función para iniciar el controlador desde index.ts
   public async start(): Promise<void> {
     //Despliega la vista usando el modelo obtenido
-    await this.view.deploy(this.model.getPapers(), this.model.getPaperNumber());
-    this.view.buttonClicked(
+    await this.view.deploy(
+      this.model.getPapers(),
+      this.model.getPaperNumber(),
+      this.model.searchingFunctionalities(),
       this.model.getBtn(),
       this.model.getInput(),
-      this.model.getFilter(),
-      this.model.searchingFunctionalities()
+      this.model.getFilter()
     );
-    this.view.anchorClicked(this.model.getPaperNumber());
     localStorage.setItem("currentPage", "1");
   }
 }

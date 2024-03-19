@@ -17,9 +17,7 @@ export default class IndexController {
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             //Despliega la vista usando el modelo obtenido
-            yield this.view.deploy(this.model.getPapers(), this.model.getPaperNumber());
-            this.view.buttonClicked(this.model.getBtn(), this.model.getInput(), this.model.getFilter(), this.model.searchingFunctionalities());
-            this.view.anchorClicked(this.model.getPaperNumber());
+            yield this.view.deploy(this.model.getPapers(), this.model.getPaperNumber(), this.model.searchingFunctionalities(), this.model.getBtn(), this.model.getInput(), this.model.getFilter());
             localStorage.setItem("currentPage", "1");
         });
     }
