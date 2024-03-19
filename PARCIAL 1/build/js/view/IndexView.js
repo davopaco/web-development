@@ -93,23 +93,25 @@ export default class IndexView {
             if (keywords.length === 0)
                 return articlesArray;
             articlesArray.forEach((article) => {
-                var _a;
                 const articleHTML = parser.parseFromString(article, "text/html");
                 const card = articleHTML.querySelector(".card");
                 const h3 = card.getElementsByClassName(parameter);
-                let foundMatch = false;
-                for (const element of h3) {
-                    const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
-                    keywords.forEach((label) => {
+                let matchQuantity = 0;
+                keywords.forEach((label) => {
+                    var _a;
+                    for (const element of h3) {
+                        const txtValue = (_a = element.innerText) !== null && _a !== void 0 ? _a : element.textContent;
                         if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
-                            foundMatch = true;
+                            matchQuantity++;
+                            break;
                         }
-                    });
-                }
-                if (foundMatch) {
+                    }
+                });
+                if (matchQuantity === keywords.length) {
                     articlesArray2.push(article);
                 }
             });
+            console.log(keywords);
             return articlesArray2;
         };
         this.getPage = (page) => {

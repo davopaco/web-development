@@ -211,20 +211,22 @@ export default class IndexView {
       const articleHTML = parser.parseFromString(article, "text/html");
       const card = articleHTML.querySelector(".card") as HTMLDivElement;
       const h3 = card.getElementsByClassName(parameter);
-      let foundMatch = false;
-      for (const element of h3) {
-        const txtValue =
-          (element as HTMLElement).innerText ?? element.textContent;
-        keywords.forEach((label) => {
+      let matchQuantity = 0;
+      keywords.forEach((label) => {
+        for (const element of h3) {
+          const txtValue =
+            (element as HTMLElement).innerText ?? element.textContent;
           if (txtValue.toUpperCase().indexOf(label.toUpperCase()) > -1) {
-            foundMatch = true;
+            matchQuantity++;
+            break;
           }
-        });
-      }
-      if (foundMatch) {
+        }
+      });
+      if (matchQuantity === keywords.length) {
         articlesArray2.push(article);
       }
     });
+    console.log(keywords);
     return articlesArray2;
   };
 
