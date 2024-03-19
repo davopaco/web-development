@@ -209,7 +209,7 @@ export default class IndexView {
 
   //Función para obtener la parte del documento HTML que representa a cada número de página.
   getPage = (page: number): string => {
-    return `<div class="pag">
+    return `<div class="pag anchor-pag">
       <a>
         <span>${page}</span>
       </a>
