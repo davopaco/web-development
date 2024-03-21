@@ -1,15 +1,16 @@
-//Define la interfaz de las funciones de búsqueda
-export default interface searchingFunctionalitiesInterface {
-  searchBar(
-    parameter: string,
-    input: HTMLInputElement,
-    articles: string[]
-  ): string[];
+import { Papers } from "./ArticleInterface";
 
-  filterByKeyword(
-    articles: string[],
-    parameter: string,
-    filter: HTMLInputElement,
-    radio: NodeListOf<HTMLInputElement>
-  ): string[];
+//Define la interfaz de las funciones de búsqueda
+export interface searchingFunctionalitiesInterface {
+  searchBar(input: string, articles: Papers[]): Papers[];
+  filterByKeyword(keywords: string[], articles: Papers[]): Papers[];
+}
+
+//Define la interfaz de los parámetros de búsqueda
+export interface toSearchInterface {
+  [key: string]: string;
+  title: string;
+  authors: string;
+  abstract: string;
+  year: string;
 }

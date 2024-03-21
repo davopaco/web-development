@@ -10,15 +10,15 @@ export default class IndexController {
 
   //Función para iniciar el controlador desde index.ts
   public async start(): Promise<void> {
+    //Se obtienen los papers de la dirección especificada.
+    await this.model.getPapers();
+
     //Despliega la vista usando los métodos del modelo.
     await this.view.deploy(
-      this.model.getPapers(),
+      this.model.getArticles(),
       this.model.getPaperNumber(),
       this.model.searchingFunctionalities(),
-      this.model.getBtn(),
-      this.model.getInput(),
-      this.model.getFilter(),
-      this.model.getRadio()
+      this.model.getTopKeywords(5)
     );
 
     //Se asigna el valor de la página actual a 1.

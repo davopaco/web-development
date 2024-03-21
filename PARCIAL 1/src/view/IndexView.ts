@@ -1,54 +1,65 @@
-import { Papers } from "../model/types/ArticleInterface.js";
-import searchingFunctionalitiesInterface from "../model/types/FunctionsInterface.js";
+import {
+  KeywordsQuantityInterface,
+  Papers,
+} from "../model/types/ArticleInterface.js";
+import { searchingFunctionalitiesInterface } from "../model/types/FunctionsInterface.js";
 
 export default class IndexView {
   //Establece las variables de la clase por Div.
   private readonly sec: HTMLDivElement;
-  private readonly articles: string[];
-  private articlesDynamic: string[];
   private numberPages: number;
+  private readonly filter: HTMLInputElement;
+  private readonly input: HTMLInputElement;
+  private readonly btn: HTMLInputElement;
+  private readonly radioSec: HTMLUListElement;
 
   constructor() {
     //Asigna a las variables de la clase los elementos del DOM.
     this.sec = document.querySelector("#sec") as HTMLDivElement;
-    this.articles = [];
-    this.articlesDynamic = [];
+    this.input = document.querySelector("#search-bar") as HTMLInputElement;
+    this.btn = document.querySelector("#search-btn") as HTMLInputElement;
+    this.filter = document.querySelector("#inloc") as HTMLInputElement;
+    this.radioSec = document.querySelector(".location") as HTMLUListElement;
     this.numberPages = 0;
   }
 
   //Método para desplegar la vista.
   public async deploy(
-    papers: Promise<Papers[]>,
+    articles: Papers[],
     numberPapers: number,
     functionalities: searchingFunctionalitiesInterface,
-    btn: HTMLInputElement,
-    input: HTMLInputElement,
-    filter: HTMLInputElement,
-    radio: NodeListOf<HTMLInputElement>,
-    currentPage: number = 1,
-    articles: string[] = this.articles
+    keywords: KeywordsQuantityInterface[],
+    currentPage: number = 1
   ): Promise<void> {
-    //Llama a la función pushArticlesPage para hacer push de los strings de los artículos al array articles.
-    await this.pushArticlesPage(papers);
-
     //Llama a la función deployPag para desplegar la paginación.
     await this.deployPag(articles, numberPapers);
 
+    //Llama a la función deployRadio para desplegar los radio buttons en la página.
+    await this.deployRadio(keywords);
+
     //Llama a la función deployArticlePag para desplegar los artículos en la página.
-    this.deployArticlePag(currentPage, articles);
+    this.deployArticlePag(currentPage, articles, numberPapers);
 
     //Llama a la función clickers para establecer los eventos de los botones para la página web.
-    this.clickers(functionalities, numberPapers, btn, input, filter, radio);
+    this.clickers(functionalities, numberPapers, articles);
   }
 
   //Método para desplegar los artículos en la página.
-  deployArticlePag(actualPag: number, articles: string[]): void {
+  deployArticlePag(
+    actualPag: number,
+    articles: Papers[],
+    numberPapers: number
+  ): void {
     //Se especifican el primero y el último artículo a desplegar.
-    let firstNumber = actualPag * 10 - 10;
-    let lastNumber = Math.min(actualPag * 10, articles.length);
+    let firstNumber = actualPag * numberPapers - numberPapers;
+    let lastNumber = Math.min(actualPag * numberPapers, articles.length);
 
     //Se despliegan los artículos en el innerHTML del Div padre.
-    this.sec.innerHTML += articles.slice(firstNumber, lastNumber).join("");
+    articles.forEach((article, index) => {
+      if (index >= firstNumber && index < lastNumber) {
+        this.sec.innerHTML += this.getArticle(article);
+      }
+    });
   }
 
   //Método para destruir los artículos de la página.
@@ -67,24 +78,9 @@ export default class IndexView {
     return Promise.resolve();
   }
 
-  //Método para hacer push de los strings de los artículos al array articles.
-  pushArticlesPage = async (papers: Promise<Papers[]>) => {
-    return await papers
-      .then((papers) => {
-        papers.forEach((paper) => {
-          this.articles.push(this.getArticle(paper));
-        });
-        //Se establece el array de artículos dinámico como todos los artículos.
-        this.setArticles(this.articles);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
   //Método para desplegar la paginación.
   deployPag(
-    articles: string[],
+    articles: Papers[],
     numberPapers: number,
     reset = false
   ): Promise<void> {
@@ -113,14 +109,15 @@ export default class IndexView {
 
     //Se establecen los números de página inicial y final.
     let firstNumber = 1;
-    let lastNumber = 5;
+    let lastNumber = this.numberPages;
 
-    //Si la página actual es mayor a 5, se establecen los números de página inicial y final con respecto a la página actual.
-    if ((currentPage - 1) % 5 === 0) {
+    //Si la página actual es mayor al número de páginas estipulado, se establecen los números de página inicial y final con respecto a la página actual.
+    if ((currentPage - 1) % this.numberPages === 0) {
       firstNumber = currentPage;
       lastNumber = currentPage + 4;
     } else {
-      firstNumber = Math.floor((currentPage - 1) / 5) * 5 + 1;
+      firstNumber =
+        Math.floor((currentPage - 1) / this.numberPages) * this.numberPages + 1;
       lastNumber = firstNumber + 4;
     }
 
@@ -145,6 +142,18 @@ export default class IndexView {
     //Llama a la función setColor para establecer los estilos del div de la paginación.
     this.setColor();
 
+    return Promise.resolve();
+  }
+
+  //Método para desplegar los radio buttons en la página.
+  deployRadio(keywords: KeywordsQuantityInterface[]): Promise<void> {
+    //Se elimina el contenido del contenedor de los radio buttons.
+    this.radioSec.innerHTML = "";
+
+    //Se itera sobre cada keyword y se despliega un radio button con su respectiva keyword.
+    keywords.forEach((keyword, index) => {
+      this.radioSec.innerHTML += this.getRadio(keyword.keyword, index + 1);
+    });
     return Promise.resolve();
   }
 
@@ -198,8 +207,10 @@ export default class IndexView {
 
   //Función para obtener las palabras clave de un artículo.
   getKeywords = (paper: Papers): string => {
-    //Obtiene un array de palabras clave a partir del string de palabras clave por artículo y las separa por coma.
-    const keywords: string[] = paper._keywords.split(",");
+    //Obtiene un array de keywords dependiendo si el atributo _keywords es un array o un string.
+    const keywords: string[] = Array.isArray(paper._keywords)
+      ? paper._keywords
+      : paper._keywords.split(",");
 
     //Retorna un string con las palabras clave en formato de lista que luego es añadido al documento HTML por artículo.
     return `<ul>${keywords
@@ -232,44 +243,38 @@ export default class IndexView {
             </div>`;
   };
 
+  //Función para obtener la parte del documento HTML que representa a cada radio button.
+  getRadio = (keyword: string, id: number): string => {
+    return `<li>
+                <input type="radio" name="radio" id="radio${id}">
+                <label for="radio${id}">${keyword}</label>
+              </li>`;
+  };
+
   //Función para establecer los eventos de los botones para la página web.
   async clickers(
     functionalities: searchingFunctionalitiesInterface,
     numberPapers: number,
-    btn: HTMLInputElement,
-    input: HTMLInputElement,
-    filter: HTMLInputElement,
-    radio: NodeListOf<HTMLInputElement>
+    articles: Papers[]
   ) {
-    this.buttonClicked(btn, input, filter, radio, functionalities);
-    this.anchorClicked(numberPapers);
+    this.buttonClicked(functionalities, articles);
+    this.anchorClicked(numberPapers, articles);
   }
 
   //Función para establecer el evento de click en el botón de búsqueda.
   buttonClicked(
-    btn: HTMLInputElement,
-    input: HTMLInputElement,
-    filter: HTMLInputElement,
-    radio: NodeListOf<HTMLInputElement>,
-    functionalities: searchingFunctionalitiesInterface
+    functionalities: searchingFunctionalitiesInterface,
+    articles: Papers[]
   ) {
-    btn.addEventListener("click", (e) => {
+    this.btn.addEventListener("click", (e) => {
       e.preventDefault();
-
-      //Llama a la función searchBar para realizar la búsqueda dependiendo de los parámetros e inputs.
-      this.searchBar(
-        "searchh",
-        input,
-        filter,
-        "keyword",
-        functionalities,
-        radio
-      );
+      //Llama a la función searchBar para realizar la búsqueda dependiendo de los artículos y las funcionalidades.
+      this.searchBar(articles, functionalities);
     });
   }
 
   //Función para establecer el evento de click en los números de página y botones de dirección.
-  anchorClicked(numberPapers: number) {
+  anchorClicked(numberPapers: number, articles: Papers[]) {
     //Selecciona todos los elementos de clase pag que son los contenedores para los números de la paginación.
     const pag = document.querySelectorAll(".pag") as NodeListOf<HTMLDivElement>;
 
@@ -322,12 +327,13 @@ export default class IndexView {
           //Llama a la función destroyArticlePag para destruir los artículos de la página.
           this.destroyArticlePag().then(async () => {
             //Una vez se destruyen, llama a las funciones para desplegar la paginación y los artículos de la página y agregar los event listeners de la paginación.
-            await this.deployPag(this.articlesDynamic, numberPapers);
+            await this.deployPag(articles, numberPapers);
             this.deployArticlePag(
               parseInt(localStorage.getItem("currentPage") ?? ""),
-              this.articlesDynamic
+              articles,
+              numberPapers
             );
-            this.anchorClicked(numberPapers);
+            this.anchorClicked(numberPapers, articles);
           });
         });
       }
@@ -355,34 +361,26 @@ export default class IndexView {
 
   //Función para realizar la búsqueda de artículos dependiendo de los parámetros e inputs.
   searchBar(
-    parameter: string,
-    input: HTMLInputElement,
-    filter: HTMLInputElement,
-    parameter2: string,
+    articles: Papers[],
     functionalities: searchingFunctionalitiesInterface,
-    radio: NodeListOf<HTMLInputElement>,
     numberPapers: number = 10
   ) {
-    //Obtiene el valor del input de búsqueda principal.
+    /*Obtiene una copia del array de artículos dependiendo del valor del input de la búsqueda, haciendo uso de
+      la funcionalidad searchBar basada en la de searchingFunctionalitiesInterface*/
     let articlesArray = functionalities
-      .searchBar(parameter, input, this.articles)
+      .searchBar(this.input.value, articles)
       .slice();
-    let articlesArray2: string[] = articlesArray.slice();
 
+    //Se crea una variable auxiliar para guardar la copia del array de artículos.
+    let articlesArray2: Papers[] = articlesArray.slice();
+
+    //Se eliminan todos los elementos del array de artículos.
     articlesArray.length = 0;
 
     //Basado en los valores para el array que obtuvo en la búsqueda principal, filtra los artículos según las keywords.
     articlesArray.push(
-      ...this.filterByKeyword(
-        articlesArray2,
-        parameter2,
-        filter,
-        radio,
-        functionalities
-      )
+      ...this.filterByKeyword(articlesArray2, functionalities)
     );
-    //Establece el array de artículos dinámico como el array de artículos filtrado.
-    this.setArticles(articlesArray);
 
     //Establece el número de páginas con respecto al número de artículos por página y el array de artículos filtrado.
     this.numberPages = Math.ceil(articlesArray.length / numberPapers);
@@ -392,34 +390,43 @@ export default class IndexView {
       /*Una vez se destruyen, llama a las funciones para desplegar la paginación y los artículos de la página y agregar los event listeners de la paginación.
         Aquí la paginación tiene puesto el reset en true.*/
       await this.deployPag(articlesArray, numberPapers, true);
-      this.deployArticlePag(1, articlesArray);
-      this.anchorClicked(10);
+      this.deployArticlePag(1, articlesArray, numberPapers);
+      this.anchorClicked(10, articlesArray);
     });
   }
 
   //Función para filtrar los artículos según las keywords.
   filterByKeyword = (
-    articles: string[],
-    parameter: string,
-    filter: HTMLInputElement,
-    radio: NodeListOf<HTMLInputElement>,
+    articles: Papers[],
     functionalities: searchingFunctionalitiesInterface
   ) => {
-    //Llama a la función filterByKeyword para filtrar los artículos según las keywords.
-    let articlesArray = functionalities.filterByKeyword(
-      articles,
-      parameter,
-      filter,
-      radio
-    );
+    //Crea un array de keywords.
+    const keywords: string[] = [];
+
+    //Selecciona todos los elementos de tipo radio.
+    const radio = document.querySelectorAll(
+      "input[type=radio]"
+    ) as NodeListOf<HTMLInputElement>;
+
+    //Itera sobre los elementos de tipo radio y si el radio está seleccionado, añade la keyword al array de keywords.
+    radio.forEach((radio) => {
+      if (radio.checked) {
+        keywords.push(radio.nextElementSibling?.textContent ?? "");
+        return;
+      }
+    });
+
+    //Si el input de la búsqueda no está vacío, añade las keywords al array de keywords.
+    if (this.filter.value !== "") {
+      this.filter.value.split(", ").forEach((keyword) => {
+        keywords.push(keyword);
+      });
+    }
+
+    //Filtra los artículos según las keywords usando la funcionalidad filterByKeyword basada en searchingFunctionalitiesInterface.
+    let articlesArray = functionalities.filterByKeyword(keywords, articles);
 
     //Retorna el array de artículos filtrado.
     return articlesArray;
-  };
-
-  //Función para establecer el array de artículos dinámico.
-  setArticles = (articles: string[]) => {
-    this.articlesDynamic.length = 0;
-    this.articlesDynamic.push(...articles);
   };
 }

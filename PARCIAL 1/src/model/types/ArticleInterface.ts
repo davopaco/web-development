@@ -12,7 +12,7 @@ export interface Papers {
   _doi?: string;
   _issn?: string;
   _journal?: string;
-  _keywords: string;
+  _keywords: string | string[];
   _month?: string;
   _pages?: string;
   _publisher?: string;
@@ -25,4 +25,10 @@ export interface Papers {
   editor?: string;
   _number?: string;
   isbn?: string;
+}
+
+//Define la interfaz para las keywords y su cantidad.
+export interface KeywordsQuantityInterface {
+  keyword: string;
+  quantity: number;
 }
