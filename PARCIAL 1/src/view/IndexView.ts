@@ -256,7 +256,7 @@ export default class IndexView {
     functionalities: searchingFunctionalitiesInterface,
     numberPapers: number,
     articles: Papers[]
-  ) {
+  ): Promise<void> {
     this.buttonClicked(functionalities, articles);
     this.anchorClicked(numberPapers, articles);
   }
@@ -265,7 +265,7 @@ export default class IndexView {
   buttonClicked(
     functionalities: searchingFunctionalitiesInterface,
     articles: Papers[]
-  ) {
+  ): void {
     this.btn.addEventListener("click", (e) => {
       e.preventDefault();
       //Llama a la función searchBar para realizar la búsqueda dependiendo de los artículos y las funcionalidades.
@@ -274,7 +274,7 @@ export default class IndexView {
   }
 
   //Función para establecer el evento de click en los números de página y botones de dirección.
-  anchorClicked(numberPapers: number, articles: Papers[]) {
+  anchorClicked(numberPapers: number, articles: Papers[]): void {
     //Selecciona todos los elementos de clase pag que son los contenedores para los números de la paginación.
     const pag = document.querySelectorAll(".pag") as NodeListOf<HTMLDivElement>;
 
@@ -364,7 +364,7 @@ export default class IndexView {
     articles: Papers[],
     functionalities: searchingFunctionalitiesInterface,
     numberPapers: number = 10
-  ) {
+  ): void {
     /*Obtiene una copia del array de artículos dependiendo del valor del input de la búsqueda, haciendo uso de
       la funcionalidad searchBar basada en la de searchingFunctionalitiesInterface*/
     let articlesArray = functionalities
@@ -399,7 +399,7 @@ export default class IndexView {
   filterByKeyword = (
     articles: Papers[],
     functionalities: searchingFunctionalitiesInterface
-  ) => {
+  ): Papers[] => {
     //Crea un array de keywords.
     const keywords: string[] = [];
 
