@@ -114,14 +114,15 @@ export default class IndexView {
             radio.forEach((radio) => {
                 var _a, _b;
                 if (radio.checked) {
+                    radio.checked = false;
                     keywords.push((_b = (_a = radio.nextElementSibling) === null || _a === void 0 ? void 0 : _a.textContent) !== null && _b !== void 0 ? _b : "");
                     return;
                 }
             });
             //Si el input de la búsqueda no está vacío, añade las keywords al array de keywords.
             if (this.filter.value !== "") {
-                this.filter.value.split(", ").forEach((keyword) => {
-                    keywords.push(keyword);
+                this.filter.value.split(",").forEach((keyword) => {
+                    keywords.push(keyword.trim());
                 });
             }
             //Filtra los artículos según las keywords usando la funcionalidad filterByKeyword basada en searchingFunctionalitiesInterface.
@@ -197,15 +198,14 @@ export default class IndexView {
         const currentPage = parseInt((_a = localStorage.getItem("currentPage")) !== null && _a !== void 0 ? _a : "1");
         //Se establecen los números de página inicial y final.
         let firstNumber = 1;
-        let lastNumber = this.numberPages;
+        let lastNumber = 5;
         //Si la página actual es mayor al número de páginas estipulado, se establecen los números de página inicial y final con respecto a la página actual.
-        if ((currentPage - 1) % this.numberPages === 0) {
+        if ((currentPage - 1) % 5 === 0) {
             firstNumber = currentPage;
             lastNumber = currentPage + 4;
         }
         else {
-            firstNumber =
-                Math.floor((currentPage - 1) / this.numberPages) * this.numberPages + 1;
+            firstNumber = Math.floor((currentPage - 1) / 5) * 5 + 1;
             lastNumber = firstNumber + 4;
         }
         //Si el número de páginas es menor al último número, se establece el último número como el número de páginas.

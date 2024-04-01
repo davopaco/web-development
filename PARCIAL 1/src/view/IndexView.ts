@@ -109,15 +109,14 @@ export default class IndexView {
 
     //Se establecen los números de página inicial y final.
     let firstNumber = 1;
-    let lastNumber = this.numberPages;
+    let lastNumber = 5;
 
     //Si la página actual es mayor al número de páginas estipulado, se establecen los números de página inicial y final con respecto a la página actual.
-    if ((currentPage - 1) % this.numberPages === 0) {
+    if ((currentPage - 1) % 5 === 0) {
       firstNumber = currentPage;
       lastNumber = currentPage + 4;
     } else {
-      firstNumber =
-        Math.floor((currentPage - 1) / this.numberPages) * this.numberPages + 1;
+      firstNumber = Math.floor((currentPage - 1) / 5) * 5 + 1;
       lastNumber = firstNumber + 4;
     }
 
@@ -411,6 +410,7 @@ export default class IndexView {
     //Itera sobre los elementos de tipo radio y si el radio está seleccionado, añade la keyword al array de keywords.
     radio.forEach((radio) => {
       if (radio.checked) {
+        radio.checked = false;
         keywords.push(radio.nextElementSibling?.textContent ?? "");
         return;
       }
@@ -418,8 +418,8 @@ export default class IndexView {
 
     //Si el input de la búsqueda no está vacío, añade las keywords al array de keywords.
     if (this.filter.value !== "") {
-      this.filter.value.split(", ").forEach((keyword) => {
-        keywords.push(keyword);
+      this.filter.value.split(",").forEach((keyword) => {
+        keywords.push(keyword.trim());
       });
     }
 

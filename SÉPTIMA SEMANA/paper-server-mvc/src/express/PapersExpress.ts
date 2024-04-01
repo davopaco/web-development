@@ -1,11 +1,27 @@
 import express, { Application } from "express";
+import PapersView from "../view/PapersView.js";
+import ErrorView from "../view/ErrorView.js";
 
 export default class PapersExpress {
   private readonly app: Application;
 
-  constructor() {
+  constructor(
+    private readonly papersView: PapersView,
+    private readonly errorView: ErrorView
+  ) {
     this.app = express();
+    this.config();
+    this.routes();
   }
+
+  config = (): void => {
+    this.app.use(express.json());
+  };
+
+  routes = (): void => {
+    this.app.use("/", this.papersView.router);
+    this.app.use("*", this.errorView.router);
+  };
 
   start = (): void => {
     const PORT = process.env["PORT"] ?? 6012;
