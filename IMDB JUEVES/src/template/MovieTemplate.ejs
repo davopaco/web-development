@@ -1,0 +1,12 @@
+<div class="movie-cell">
+  <a id="<%=movie.rank%>"><img src="<%=movie.image%>" alt="<%=movie.title%>"></a>
+  <div class="text">
+    <h3 class="searchh"><%= movie.rank %>. <%= movie.title %></h3>
+    <p><%= movie.year %>&emsp;<%=(movie.genre != null) ? movie.genre[0] : " "
+      %></p>
+    <p>⭐️&emsp;<%=movie.rating%></p>
+  </div>
+  <div class="description">
+    <p class="searchh"><%=movie.description%></p>
+  </div>
+</div>
