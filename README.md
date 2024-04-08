@@ -1,4 +1,4 @@
-# Repostitorio para Desarrollo Web de la UPB 🎬✨
+# Repostitorio para Desarrollo Web de la UPB 💻✨
 
 _Bienvenidxs al repositorio para la materia para Desarrollo Web. Este repositorio contiene todas las actividades realizadas dentro de la materia. Algunas se encuentran clasificadas como SEMANAS y otras como otro tipo de carpetas._
 
