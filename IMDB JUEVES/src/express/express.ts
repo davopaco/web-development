@@ -3,11 +3,15 @@ import MovieConfig from "../config/MovieConfig";
 import MovieRouter from "../router/MovieRouter";
 import path from "path";
 import morgan from "morgan";
+import ErrorRouter from "../router/ErrorRouter";
 
 export default class MovieExpress {
   private readonly app: Application;
 
-  constructor(private readonly movieRouter: MovieRouter) {
+  constructor(
+    private readonly movieRouter: MovieRouter,
+    private readonly errorRouter: ErrorRouter
+  ) {
     this.app = express();
     this.config();
     this.routes();
@@ -22,7 +26,7 @@ export default class MovieExpress {
 
   routes = (): void => {
     this.app.use("/", this.movieRouter.router);
-    /* this.app.use("*", this.errorRouter.router); */
+    this.app.use("*", this.errorRouter.router);
   };
 
   start = (): void => {

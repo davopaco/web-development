@@ -1,17 +1,15 @@
-
-import { Router } from 'express'
-import MovieView from '../view/MovieView'
+import { Router } from "express";
+import MovieView from "../view/MovieView";
 
 export default class MoviesRouter {
-  router: Router
+  router: Router;
 
-  constructor (private readonly movieView: MovieView) {
-    this.router = Router()
-    this.routes()
+  constructor(private readonly movieView: MovieView) {
+    this.router = Router();
+    this.routes();
   }
 
   routes = (): void => {
-    this.router.get('/', this.movieView.index.bind(this.movieView.index))
-  }
+    this.router.get("/", this.movieView.index.bind(this.movieView.index));
+  };
 }
-

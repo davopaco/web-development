@@ -9,10 +9,10 @@ export default class MovieView {
     movies.then((movies) => {
       console.log(movies);
       if (movies.length > 0) {
-        res.render("IndexTemplate", { movies: movies });
+        res.render("IndexTemplate", { movies });
       } else {
         res.render("ErrorTemplate", {
-          message: "<h1> Movies were not found. What a pity </h1>",
+          message: "Movies were not found. What a pity",
         });
       }
     });

@@ -48,7 +48,7 @@
     <p>IMDb Top 100 as rated by regular IMDb voters</p>
     <div class="movie-table" id="sec">
       <% movies.forEach(movie => {%>
-      <% include('./MovieTemplate'); %>
+      <%- include('./MovieTemplate', {movie}); %>
       <% }); %>
     </div>
   </div>

@@ -1,4 +1,5 @@
 import { MovieInterface } from "./types/MovieInterface.js";
+/* import data from "../data.json"; */
 
 export default class MovieModel {
   constructor() {}
@@ -23,6 +24,8 @@ export default class MovieModel {
           console.warn(err);
           reject(err);
         });
+      // JSON testing
+      /* resolve(data); */
     });
   };
 }
