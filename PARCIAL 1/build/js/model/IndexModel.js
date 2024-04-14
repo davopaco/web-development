@@ -16,9 +16,9 @@ export default class IndexModel {
     //Función para obtener la promesa de los papers.
     getPapers() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield new Promise((resolve, reject) => {
+            return yield new Promise((_resolve, reject) => {
                 //Se hace un fetch a la dirección del servidor para obtener los papers.
-                const response = fetch("http://localhost:1802/ref/references/", {
+                const response = fetch("http://localhost:6012/ref/references/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -28,7 +28,8 @@ export default class IndexModel {
                     .then((data) => {
                     //Se obtiene la respuesta en formato json y se resuelve la promesa con el array de papers.
                     data.json().then((data) => {
-                        resolve(this.setData(data.papers));
+                        console.log(data);
+                        _resolve(this.setData(data));
                     });
                 })
                     .catch((err) => {

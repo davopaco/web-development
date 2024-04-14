@@ -1,0 +1,21 @@
+{
+  "name": "i008-api-papers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "papers.js",
+  "scripts": {
+    "start": "node papers.js",
+    "build": "tsc",
+    "dev": "ts-node-dev src/papers.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0"
+  }
+}

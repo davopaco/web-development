@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import PapersView from "../view/PapersView.js";
 import ErrorView from "../view/ErrorView.js";
+import cors from "cors";
 
 export default class PapersExpress {
   private readonly app: Application;
@@ -16,6 +17,7 @@ export default class PapersExpress {
 
   config = (): void => {
     this.app.use(express.json());
+    this.app.use(cors());
   };
 
   routes = (): void => {

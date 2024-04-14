@@ -1,13 +1,12 @@
 import { MovieInterface } from "./types/MovieInterface.js";
-/* import data from "../data.json"; */
+import data from "../data.json";
 
 export default class MovieModel {
-  constructor() {}
-
+  //Función asincrónica que retorna un arreglo de películas.
   findAll = async (): Promise<MovieInterface[]> => {
     return await new Promise((resolve, reject) => {
       //Hace un fetch a la API de las películas.
-      const response = fetch("https://imdb-top-100-movies.p.rapidapi.com/", {
+      /* const response = fetch("https://imdb-top-100-movies.p.rapidapi.com/", {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
@@ -23,9 +22,13 @@ export default class MovieModel {
         .catch((err) => {
           console.warn(err);
           reject(err);
-        });
+        }); */
       // JSON testing
-      /* resolve(data); */
+      if (data) {
+        resolve(data);
+      } else {
+        reject("No data found");
+      }
     });
   };
 }
