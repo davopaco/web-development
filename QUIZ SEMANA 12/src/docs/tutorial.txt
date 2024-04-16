@@ -1,0 +1,28 @@
+
+Primero, verificamos que haya git
+
+despues, ejecutamos el init.sh.
+
+luego, nos traemos el template.  Para el template usamos .ejs
+el css va en la carpeta public.
+
+posterior a esto, realizamos movietemplate, que es el html de cada pelicula.
+
+Ahora, realizaremos MovieModel, ya que de ahi viene toda la logica de negocio.
+En este caso, MovieModel tiene el metodo de getMovies, el cual extrae las peliculas de una API externa.
+
+Necesitamos la interface para poder consumir de la API. En el método prometemos la API 
+
+Ahora realizamos Movie View. En MovieView renderizamos la vista de las peliculas, y la vista de error
+
+Se modifica IndexTemplate.ejs para que reciba las peliculas y las renderice 
+
+se crea express.ts, en donde se especifica la ruta publica, y se llaman a las variables de entorno.
+
+Se instancia el objeto de express en movie.ts, el cual instancia el router, y este instancia la vista y esta instancia el modelo
+
+o sea, se ve asi: new MoviesRouter(new MovieView(new MovieModel()))
+
+
+ cd movies\ 1/ PARA MOVERSE CON ESPACIOS
+
