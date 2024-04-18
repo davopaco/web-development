@@ -1,4 +1,5 @@
 import {
+  BooksPageInterface,
   ProductsInterface,
   ToSearchInterface,
 } from "./types/ProductsInterface";
@@ -7,15 +8,23 @@ import { SaveInterface } from "./types/RequestInterface";
 
 export default class ProductsModel {
   private questions: SaveInterface[];
+  private books: BooksPageInterface[];
 
   constructor() {
     this.questions = [];
+    this.books = [];
   }
 
-  findAll = async (): Promise<ProductsInterface[]> => {
+  findAll = async (id: number): Promise<ProductsInterface[]> => {
     return await new Promise((resolve, reject) => {
+      const initialLimit = id * 10 - 10;
+      const finalLimit = id * 10;
+      const booksArray: ProductsInterface[] = [];
       if (data) {
-        resolve(data);
+        for (let i = initialLimit; i < finalLimit; i++) {
+          booksArray.push(data[i]);
+        }
+        resolve(booksArray);
       } else {
         reject(new Error("No data found"));
       }
@@ -72,5 +81,9 @@ export default class ProductsModel {
 
       //Se retorna el array de artículos filtrado.
     });
+  };
+
+  getNumberPages = (): number => {
+    return Math.ceil(data.length / 10);
   };
 }

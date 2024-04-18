@@ -6,18 +6,22 @@ export default class ProductsView {
   constructor(private readonly productsModel: ProductsModel) {}
 
   index = async (_req: Request, res: Response): Promise<void> => {
-    //Declara una variable movies que almacena el resultado de la función findAll de movieModel
-    const books = this.productsModel.findAll();
-    //Llama a la función then de movies que recibe un callback con un parámetro movies
+    const query = _req.query.page as string;
+    if (query === undefined) {
+      return res.redirect("/?page=1");
+    }
+    const books = this.productsModel.findAll(Number(query));
     books.then((books) => {
-      //Si el tamaño de movies es mayor a 0, renderiza el IndexTemplate con las películas
       books.forEach((book) => {
         if (book.publishedDate !== undefined) {
           book.dateString = new Date(book.publishedDate?.$date).toDateString();
         }
       });
       if (books.length > 0) {
-        res.render("ProductsTemplate", { books });
+        res.render("ProductsTemplate", {
+          books,
+          numberPages: this.productsModel.getNumberPages(),
+        });
       } else {
         //Si no, renderiza el ErrorTemplate con un mensaje
         res.render("ErrorTemplate", {

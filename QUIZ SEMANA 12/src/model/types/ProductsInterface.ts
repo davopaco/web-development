@@ -21,8 +21,13 @@ export interface IDInterface {
   $oid: string;
 }
 
-export interface ToSearchInterface{
+export interface ToSearchInterface {
   [key: string]: string | undefined;
   longDescription?: string;
   shortDescription?: string;
+}
+
+export interface BooksPageInterface {
+  books: ProductsInterface[];
+  numberPages: number;
 }
