@@ -8,6 +8,10 @@ export default class Character extends AbstractPerson {
     this.gender = gender;
   }
 
+  public isNull(): boolean {
+    return false;
+  }
+
   public getGender(): string {
     return this.gender;
   }
