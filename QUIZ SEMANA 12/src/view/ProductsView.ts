@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
 import ProductsModel from "../model/ProductsModel";
+import SaveModel from "../model/SaveModel";
 import { SaveInterface } from "../model/types/RequestInterface";
 
 export default class ProductsView {
-  constructor(private readonly productsModel: ProductsModel) {}
+  constructor(
+    private readonly productsModel: ProductsModel,
+    private readonly saveModel: SaveModel
+  ) {}
 
   index = async (_req: Request, res: Response): Promise<void> => {
     const page = _req.query.page as string;
@@ -41,7 +45,7 @@ export default class ProductsView {
         .status(500)
         .json({ error: "There was an error pushing the questions." });
     }
-    const books = this.productsModel.save(body, query);
+    const books = this.saveModel.save(body, query);
     res.status(200).json(books);
   };
 

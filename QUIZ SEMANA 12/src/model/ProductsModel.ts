@@ -4,15 +4,12 @@ import {
   ToSearchInterface,
   WordSearchedInterface,
 } from "./types/ProductsInterface";
-import data from "../data.json";
-import { SaveInterface } from "./types/RequestInterface";
+import data from "../database/data.json";
 
 export default class ProductsModel {
-  private questions: SaveInterface[];
   private books: WordSearchedInterface;
 
   constructor() {
-    this.questions = [];
     this.books = { booksPage: [], searchWord: "" };
     this.setData(data, "");
   }
@@ -118,17 +115,6 @@ export default class ProductsModel {
 
   getPages = (): number => {
     return this.books.booksPage.length;
-  };
-
-  save = (content: SaveInterface, query: string): boolean => {
-    try {
-      content["id"] = query;
-      this.questions.push(content);
-      console.log(this.questions);
-      return true;
-    } catch (error) {
-      return false;
-    }
   };
 
   getNumberPagesRendered = (pageNumber: number): NumberPagesRenderInterface => {
