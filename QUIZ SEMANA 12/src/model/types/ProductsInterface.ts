@@ -31,3 +31,13 @@ export interface BooksPageInterface {
   books: ProductsInterface[];
   numberPages: number;
 }
+
+export interface WordSearchedInterface {
+  searchWord: string | undefined;
+  booksPage: BooksPageInterface[];
+}
+
+export interface NumberPagesRenderInterface {
+  start: number;
+  end: number;
+}

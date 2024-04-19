@@ -1,50 +1,78 @@
 import {
-  BooksPageInterface,
+  NumberPagesRenderInterface,
   ProductsInterface,
   ToSearchInterface,
+  WordSearchedInterface,
 } from "./types/ProductsInterface";
 import data from "../data.json";
 import { SaveInterface } from "./types/RequestInterface";
 
 export default class ProductsModel {
   private questions: SaveInterface[];
-  private books: BooksPageInterface[];
+  private books: WordSearchedInterface;
 
   constructor() {
     this.questions = [];
-    this.books = [];
+    this.books = { booksPage: [], searchWord: "" };
+    this.setData(data, "");
   }
 
-  findAll = async (id: number): Promise<ProductsInterface[]> => {
+  setData = async (
+    books: ProductsInterface[],
+    searchWord: string
+  ): Promise<void> => {
     return await new Promise((resolve, reject) => {
-      const initialLimit = id * 10 - 10;
-      const finalLimit = id * 10;
-      const booksArray: ProductsInterface[] = [];
-      if (data) {
-        for (let i = initialLimit; i < finalLimit; i++) {
-          booksArray.push(data[i]);
+      if (books) {
+        this.books.booksPage = [];
+        for (let i = 1; i <= this.getNumberPages(books); i++) {
+          const initialLimit = i * 10 - 10;
+          const finalLimit = i * 10;
+          const booksArray: ProductsInterface[] = [];
+          for (let j = initialLimit; j < finalLimit; j++) {
+            if (books[j]) {
+              booksArray.push(books[j]);
+            }
+          }
+          this.books.booksPage.push({ numberPages: i, books: booksArray });
         }
-        resolve(booksArray);
+        this.books.searchWord = searchWord;
+        resolve();
       } else {
         reject(new Error("No data found"));
       }
     });
   };
 
-  save = (content: SaveInterface, query: string): boolean => {
-    try {
-      content["id"] = query;
-      this.questions.push(content);
-      console.log(this.questions);
-      return true;
-    } catch (error) {
-      return false;
+  findPage = async (
+    page: number,
+    searchWord: string
+  ): Promise<ProductsInterface[]> => {
+    if (searchWord === "" && this.books.searchWord !== searchWord) {
+      console.log("setting data");
+      await this.setData(data, "");
+    } else if (searchWord !== this.books.searchWord) {
+      console.log("searching");
+      await this.search(searchWord);
     }
+
+    if (this.books.booksPage.length === 0) {
+      return [];
+    }
+
+    if (page > this.books.booksPage.length || page < 1) {
+      return [];
+    }
+
+    return this.books.booksPage[page - 1].books;
   };
 
-  search = async (input: string): Promise<ProductsInterface[]> => {
-    return await new Promise((resolve, reject) => {
+  search = async (searchWord: string): Promise<void> => {
+    return new Promise(async (resolve, reject) => {
       //Se crea un array de strings para guardar los artículos que cumplan con el criterio de búsqueda.
+      if (searchWord === "" || searchWord === undefined) {
+        await this.setData(data, "");
+        return resolve();
+      }
       if (data) {
         let booksArray: ProductsInterface[] = [];
         //Se itera sobre cada artículo.
@@ -63,7 +91,7 @@ export default class ProductsModel {
               if (
                 (toSearch[key] as string)
                   .toUpperCase()
-                  .indexOf(input.toUpperCase()) > -1
+                  .indexOf(searchWord.toUpperCase()) > -1
               ) {
                 foundMatch = true;
               }
@@ -74,7 +102,8 @@ export default class ProductsModel {
             booksArray.push(book);
           }
         });
-        resolve(booksArray);
+        await this.setData(booksArray, searchWord);
+        resolve();
       } else {
         reject(new Error("No data found"));
       }
@@ -83,7 +112,35 @@ export default class ProductsModel {
     });
   };
 
-  getNumberPages = (): number => {
-    return Math.ceil(data.length / 10);
+  getNumberPages = (books: ProductsInterface[]): number => {
+    return Math.ceil(books.length / 10);
+  };
+
+  getPages = (): number => {
+    return this.books.booksPage.length;
+  };
+
+  save = (content: SaveInterface, query: string): boolean => {
+    try {
+      content["id"] = query;
+      this.questions.push(content);
+      console.log(this.questions);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  getNumberPagesRendered = (pageNumber: number): NumberPagesRenderInterface => {
+    const start = Math.ceil(pageNumber / 5) * 5 - 4;
+    let end = Math.ceil(pageNumber / 5) * 5;
+    if (end > this.getPages()) {
+      end = this.getPages();
+    }
+    const numberPages = {
+      start: start,
+      end: end,
+    };
+    return numberPages;
   };
 }

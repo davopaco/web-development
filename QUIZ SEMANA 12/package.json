@@ -5,7 +5,7 @@
   "main": "./build/products.js",
   "scripts": {
     "dev": "ts-node-dev --env-file=env/.development.env src/products.ts",
-    "build": "rm -rf ./build && tsc",
+    "build": "rm -rf ./build && tsc && npm run copy-files",
     "lint": "ts-standard --fix",
     "copy-files": "copyfiles -u 1 src/**/*.ejs src/**/*.css build/src/",
     "start": "node --env-file=env/.production.env build/src/products.js",

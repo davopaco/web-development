@@ -6,21 +6,23 @@ export default class ProductsView {
   constructor(private readonly productsModel: ProductsModel) {}
 
   index = async (_req: Request, res: Response): Promise<void> => {
-    const query = _req.query.page as string;
-    if (query === undefined) {
+    const page = _req.query.page as string;
+    if (page === undefined) {
       return res.redirect("/?page=1");
     }
-    const books = this.productsModel.findAll(Number(query));
+    const pageNumber = Number(page);
+    const books = this.productsModel.findPage(pageNumber, "");
     books.then((books) => {
       books.forEach((book) => {
         if (book.publishedDate !== undefined) {
           book.dateString = new Date(book.publishedDate?.$date).toDateString();
         }
       });
+
       if (books.length > 0) {
         res.render("ProductsTemplate", {
           books,
-          numberPages: this.productsModel.getNumberPages(),
+          numberPages: this.productsModel.getNumberPagesRendered(pageNumber),
         });
       } else {
         //Si no, renderiza el ErrorTemplate con un mensaje
@@ -45,15 +47,19 @@ export default class ProductsView {
 
   search = async (req: Request, res: Response): Promise<void> => {
     const input = req.query.input as string;
+    const page = req.query.page as string;
+    const pageNumber = Number(page);
     if (input === "") {
       return res.redirect("/");
     }
-    const books = this.productsModel.search(input);
+    const books = this.productsModel.findPage(pageNumber, input);
     books
       .then((books) => {
         if (books.length > 0) {
-          console.log(books);
-          res.render("ProductsTemplate", { books: books });
+          res.render("ProductsTemplate", {
+            books: books,
+            numberPages: this.productsModel.getNumberPagesRendered(pageNumber),
+          });
         } else {
           res.render("ErrorTemplate", {
             message: "Books were not found",
