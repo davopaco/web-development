@@ -16,5 +16,6 @@ export default class ProductssRouter {
       "/search",
       this.productsView.search.bind(this.productsView)
     );
+    this.router.get("/order", this.productsView.order.bind(this.productsView));
   };
 }

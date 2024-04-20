@@ -5,12 +5,15 @@ import {
   WordSearchedInterface,
 } from "./types/ProductsInterface";
 import data from "../database/data.json";
+import OrderModel from "./OrderModel";
 
 export default class ProductsModel {
   private books: WordSearchedInterface;
+  private booksArray: ProductsInterface[];
 
-  constructor() {
+  constructor(private readonly orderModel: OrderModel) {
     this.books = { booksPage: [], searchWord: "" };
+    this.booksArray = [];
     this.setData(data, "");
   }
 
@@ -19,6 +22,7 @@ export default class ProductsModel {
     searchWord: string
   ): Promise<void> => {
     return await new Promise((resolve, reject) => {
+      this.booksArray = [];
       if (books) {
         this.books.booksPage = [];
         for (let i = 1; i <= this.getNumberPages(books); i++) {
@@ -32,6 +36,7 @@ export default class ProductsModel {
           }
           this.books.booksPage.push({ numberPages: i, books: booksArray });
         }
+        this.booksArray = books;
         this.books.searchWord = searchWord;
         resolve();
       } else {
@@ -42,25 +47,30 @@ export default class ProductsModel {
 
   findPage = async (
     page: number,
-    searchWord: string
+    searchWord: string | number
   ): Promise<ProductsInterface[]> => {
-    if (searchWord === "" && this.books.searchWord !== searchWord) {
-      console.log("setting data");
-      await this.setData(data, "");
-    } else if (searchWord !== this.books.searchWord) {
-      console.log("searching");
-      await this.search(searchWord);
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (typeof searchWord === "string") {
+          if (searchWord === "" && this.books.searchWord !== searchWord) {
+            await this.setData(data, "");
+          } else if (searchWord !== this.books.searchWord) {
+            await this.search(searchWord);
+          }
+        }
 
-    if (this.books.booksPage.length === 0) {
-      return [];
-    }
+        if (this.books.booksPage.length === 0) {
+          resolve([]);
+        }
 
-    if (page > this.books.booksPage.length || page < 1) {
-      return [];
-    }
-
-    return this.books.booksPage[page - 1].books;
+        if (page > this.books.booksPage.length || page < 1) {
+          resolve([]);
+        }
+        resolve(this.books.booksPage[page - 1].books);
+      } catch (error) {
+        reject(error);
+      }
+    });
   };
 
   search = async (searchWord: string): Promise<void> => {
@@ -128,5 +138,33 @@ export default class ProductsModel {
       end: end,
     };
     return numberPages;
+  };
+
+  order = async (order: string): Promise<void> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let ordered;
+        switch (order) {
+          case "category":
+            ordered = await this.orderModel.orderByCategory(this.booksArray);
+            await this.setData(ordered, this.books.searchWord);
+            break;
+          case "name":
+            ordered = await this.orderModel.orderByName(this.booksArray);
+            await this.setData(ordered, this.books.searchWord);
+            break;
+          case "author":
+            ordered = await this.orderModel.orderByAuthor(this.booksArray);
+            await this.setData(ordered, this.books.searchWord);
+            break;
+          default:
+            await this.setData(data, "");
+            break;
+        }
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
   };
 }

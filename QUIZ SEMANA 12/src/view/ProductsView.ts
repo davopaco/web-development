@@ -76,4 +76,36 @@ export default class ProductsView {
         });
       });
   };
+
+  order = async (req: Request, res: Response): Promise<void> => {
+    let page = req.query.page as string;
+    const order = req.query.order as string;
+    if (page === undefined) {
+      return res.redirect(`/order?order=${order}&page=1`);
+    }
+    if (order === undefined) {
+      return res.redirect("/");
+    }
+    const pageNumber = Number(page);
+    await this.productsModel.order(order);
+    const books = this.productsModel.findPage(pageNumber, -1);
+    books
+      .then((books) => {
+        if (books.length > 0) {
+          res.render("ProductsTemplate", {
+            books: books,
+            numberPages: this.productsModel.getNumberPagesRendered(pageNumber),
+          });
+        } else {
+          res.render("ErrorTemplate", {
+            message: "Books were not found",
+          });
+        }
+      })
+      .catch((_error) => {
+        res.render("ErrorTemplate", {
+          message: "There was a problem with getting movies for the search",
+        });
+      });
+  };
 }
