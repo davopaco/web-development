@@ -33,7 +33,7 @@ export interface BooksPageInterface {
 }
 
 export interface WordSearchedInterface {
-  searchWord: string;
+  searchWord: string | number;
   booksPage: BooksPageInterface[];
 }
 

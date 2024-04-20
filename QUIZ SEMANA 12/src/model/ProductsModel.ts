@@ -14,17 +14,17 @@ export default class ProductsModel {
   constructor(private readonly orderModel: OrderModel) {
     this.books = { booksPage: [], searchWord: "" };
     this.booksArray = [];
-    this.setData(data, "");
+    this.setData([...data], "");
   }
 
   setData = async (
     books: ProductsInterface[],
-    searchWord: string
+    searchWord: string | number
   ): Promise<void> => {
     return await new Promise((resolve, reject) => {
       this.booksArray = [];
       if (books) {
-        this.books.booksPage = [];
+        this.books = { booksPage: [], searchWord: "" };
         for (let i = 1; i <= this.getNumberPages(books); i++) {
           const initialLimit = i * 10 - 10;
           const finalLimit = i * 10;
@@ -53,7 +53,7 @@ export default class ProductsModel {
       try {
         if (typeof searchWord === "string") {
           if (searchWord === "" && this.books.searchWord !== searchWord) {
-            await this.setData(data, "");
+            await this.setData([...data], "");
           } else if (searchWord !== this.books.searchWord) {
             await this.search(searchWord);
           }
@@ -76,14 +76,15 @@ export default class ProductsModel {
   search = async (searchWord: string): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       //Se crea un array de strings para guardar los artículos que cumplan con el criterio de búsqueda.
+      let dataArray = [...data];
       if (searchWord === "" || searchWord === undefined) {
-        await this.setData(data, "");
+        await this.setData(dataArray, "");
         return resolve();
       }
-      if (data) {
+      if (dataArray) {
         let booksArray: ProductsInterface[] = [];
         //Se itera sobre cada artículo.
-        data.forEach((book) => {
+        dataArray.forEach((book) => {
           //Booleano para saber si se encontró una coincidencia.
           let foundMatch = false;
           //Objeto con los atributos del artículo que se van a buscar.
@@ -147,18 +148,18 @@ export default class ProductsModel {
         switch (order) {
           case "category":
             ordered = await this.orderModel.orderByCategory(this.booksArray);
-            await this.setData(ordered, this.books.searchWord);
+            await this.setData(ordered, -1);
             break;
           case "name":
             ordered = await this.orderModel.orderByName(this.booksArray);
-            await this.setData(ordered, this.books.searchWord);
+            await this.setData(ordered, -1);
             break;
           case "author":
             ordered = await this.orderModel.orderByAuthor(this.booksArray);
-            await this.setData(ordered, this.books.searchWord);
+            await this.setData(ordered, -1);
             break;
           default:
-            await this.setData(data, "");
+            await this.setData([...data], "");
             break;
         }
         resolve();
