@@ -1,22 +1,25 @@
-import AbstractPerson from "./AbstractPerson";
+import AbstractPerson from "../person/AbstractPerson"
 
 export default class Character extends AbstractPerson {
-  private gender: string;
+  private gender: string
 
   constructor(name: string, lastname: string, gender: string) {
-    super(name, lastname);
-    this.gender = gender;
+    super(
+      name,
+      lastname
+    )
+    this.gender = gender
   }
 
   public isNull(): boolean {
-    return false;
+    return false
   }
 
   public getGender(): string {
-    return this.gender;
+    return this.gender
   }
 
   public setGender(gender: string): void {
-    this.gender = gender;
+    this.gender = gender
   }
 }

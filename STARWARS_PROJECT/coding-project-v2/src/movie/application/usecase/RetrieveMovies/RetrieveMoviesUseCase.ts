@@ -1,4 +1,4 @@
-import Movie from "../../../domain/model/Movie";
+import Movie from "../../../domain/model/movie/Movie";
 import RetrieveMoviesUseCasePort from "../../../domain/port/driver/RetrieveMovies/RetrieveMoviesUseCasePort";
 
 export default class RetrieveMoviesUseCase
@@ -6,11 +6,13 @@ export default class RetrieveMoviesUseCase
 {
   name: string;
 
-  constructor() {
+  constructor(
+    private readonly retrieveMoviesUseCasePort: RetrieveMoviesUseCasePort
+  ) {
     this.name = "RetrieveMoviesUseCase";
   }
 
   public getMovies = async (): Promise<Movie[]> => {
-    return [];
+    return this.retrieveMoviesUseCasePort.getMovies();
   };
 }
