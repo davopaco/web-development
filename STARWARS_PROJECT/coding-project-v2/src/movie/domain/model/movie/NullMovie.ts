@@ -1,5 +1,5 @@
-import AbstractMovie from "./AbstractMovie"
-import NullDirector from "../director/NullDirector"
+import AbstractMovie from "./AbstractMovie";
+import NullDirector from "../director/NullDirector";
 
 export default class NullMovie extends AbstractMovie {
   constructor() {
@@ -9,20 +9,40 @@ export default class NullMovie extends AbstractMovie {
       "not found opening in database",
       new Date(),
       [],
-      new NullDirector()
-    )
+      new NullDirector(),
+      []
+    );
   }
 
   public isNull(): boolean {
-    return true
+    return true;
   }
 
-  public setTitle(): void { return }
-  public setEpisode_id(): void { return }
-  public setOpening(): void { return }
-  public setReleaseDate(): void { return }
-  public setProducers(): void { return }
-  public setDirector(): void { return }
-  public addProducer(): void { return }
-  public removeProducer(): void { return }
+  public setTitle(): void {
+    return;
+  }
+  public setEpisode_id(): void {
+    return;
+  }
+  public setOpening(): void {
+    return;
+  }
+  public setReleaseDate(): void {
+    return;
+  }
+  public setProducers(): void {
+    return;
+  }
+  public setDirector(): void {
+    return;
+  }
+  public addProducer(): void {
+    return;
+  }
+  public removeProducer(): void {
+    return;
+  }
+  public setCast(): void {
+    return;
+  }
 }

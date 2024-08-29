@@ -7,7 +7,8 @@
     "dev": "ts-node-dev --env-file=env/.development.env src/swf-app.ts",
     "build": "rm -rf ./build && tsc",
     "start": "node --env-file=env/.production.env build/swf-app.js",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "testf": "npx jest --testPathPattern='swf-app.test.ts' --verbose"
   },
   "keywords": [
     "swf-app"
@@ -36,10 +37,12 @@
     ]
   },
   "dependencies": {
+    "@types/supertest": "^6.0.2",
     "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "morgan": "^1.10.0",
+    "redis": "^4.6.13",
     "undici": "^6.14.0"
   },
   "devDependencies": {

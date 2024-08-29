@@ -1,4 +1,4 @@
-export default interface Movie {
+export default interface StarwarsMovie {
   title: string;
   episode_id: number;
   opening_crawl: string;

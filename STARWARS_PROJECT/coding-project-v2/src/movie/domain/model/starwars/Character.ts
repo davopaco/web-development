@@ -1,4 +1,4 @@
-export default interface Character {
+export default interface StarwarsCharacter {
   name: string;
   gender: string;
 }

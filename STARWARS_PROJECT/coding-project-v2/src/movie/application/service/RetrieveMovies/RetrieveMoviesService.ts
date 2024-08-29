@@ -1,16 +1,17 @@
 import Movie from "../../../domain/model/movie/Movie";
+import RetrieveMoviesPort from "../../../domain/port/driven/RetrieveMoviesPort";
 import RetrieveMoviesServicePort from "../../../domain/port/driver/RetrieveMovies/RetrieveMoviesServicePort";
 
 export default class RetrieveMoviesService
   implements RetrieveMoviesServicePort
 {
-  name: string;
+  constructor(private readonly retrieveMovies: RetrieveMoviesPort) {}
 
-  constructor() {
-    this.name = "RetrieveMoviesService";
-  }
+  public static readonly getClassName = (): string => {
+    return "RetrieveMoviesService";
+  };
 
   public getMovies = async (): Promise<Movie[]> => {
-    return [];
+    return await this.retrieveMovies.findAll();
   };
 }
