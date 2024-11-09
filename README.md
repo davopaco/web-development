@@ -19,4 +19,4 @@ _This repository was made for the sole purpose of storing the development made t
 - **Calculator**: Calculator created only on the frontend.
 - **Article Manager**: Helps make complex searches through articles consumed through an API, with a pagination module.
 - **Movies Page**: Lists movies consumed through an API.
-- **Starwars Movies**: Lists starwars movies consumed through the [starwars API](https://swapi.dev/), using hexagonal architecture represented usign a class diagram. 
+- **Starwars Movies**: Lists starwars movies consumed through the [starwars API](https://swapi.dev/), using hexagonal architecture structurally represented using a class diagram. 
