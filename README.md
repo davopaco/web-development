@@ -1,21 +1,22 @@
-# Repostitorio para Desarrollo Web de la UPB 💻✨
+# Web Development's Course Repository 💻✨
 
-_Bienvenidxs al repositorio para la materia para Desarrollo Web. Este repositorio contiene todas las actividades realizadas dentro de la materia. Algunas se encuentran clasificadas como SEMANAS y otras como otro tipo de carpetas._
+_This repository was made for the sole purpose of storing the development made through the course. It was held on the UPB: Seccional Bucaramanga._
 
-## 🌟 Features
+## 🌟 Technologies Used
 
-- **TypeScript**: Se maneja TypeScript como lenguaje para construir aplicaciones JavaScript en front-end y back-end.
-- **EJS**: Manejo de templates EJS para la creación de HTMLs dinámicos desde el servidor.
-- **HTML**: Manejo de documentos HTML para definición de estructura de páginas web.
-- **CSS**: Estilos para documentos HTML.
-- **Node.JS**: Entorno de ejecución para JavaScript.
-- **Express**: Framework para implementación de RESTful APIs.
-- **Patrones de diseño**: Uso de patrones como MVC y MVT.
-
+- **TypeScript**: Typing language with usage on frontend and backend.
+- **EJS**: For dynamic rendering on MPAs with SSR.
+- **HTML**: For SPAs.
+- **CSS**: Stylesheets for HTML and EJS documents.
+- **Node.JS**: Runtime environment for JavaScript used for the backend.
+- **Express**: RESTFul APIs framework used with Node.
+- **Design Patterns**: Factory, Singleton, Facade.
+- **Architectural Patterns**: Hexagonal Architecture with the use of Clean Code strategy.
 ---
 
-## 👌 Cambios Recientes
+## 🎉 Some of the features 
 
-### 08/04/2024
-
-- Se arregló el bug para la renderización de un template ejs en otro template ejs. El problema radicaba en implementar los datos dentro del include y asegurarse de que estuviese en el patrón: "<%-> <%>"
+- **Calculator**: Calculator created only on the frontend.
+- **Article Manager**: Helps make complex searches through articles consumed through an API, with a pagination module.
+- **Movies Page**: Lists movies consumed through an API.
+- **Starwars Movies**: Lists starwars movies consumed through the [starwars API] (https://swapi.dev/), using hexagonal architecture represented usign a class diagram. 
